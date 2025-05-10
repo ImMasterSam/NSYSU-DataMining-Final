@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
-from models.model import Classifier
-from collections import Counter
+from Classifiers.classifier import Classifier
 from sklearn.ensemble import RandomForestClassifier as skRandomForest
 
 class RandomForestClassifier(Classifier):
@@ -11,12 +10,10 @@ class RandomForestClassifier(Classifier):
 
     def fit(self, x_train: pd.DataFrame, y_train: pd.Series):
         x_train = x_train.to_numpy()
-        y_train = y_train.to_numpy()
+        y_train = y_train.to_numpy().ravel()
 
         if self.normalize:
-            self.mean = x_train.mean(axis=0)
-            self.std = x_train.std(axis=0)
-            x_train = (x_train - self.mean) / self.std
+            x_train = self.scaler.fit_transform(x_train)
 
         self.clf.fit(x_train,y_train)
 
@@ -24,7 +21,7 @@ class RandomForestClassifier(Classifier):
         x_test = x_test.to_numpy()
 
         if self.normalize:
-            x_test = (x_test - self.mean) / self.std
+            x_test = self.scaler.transform(x_test)
 
         y_predict = self.clf.predict(x_test)
         
