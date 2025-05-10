@@ -5,7 +5,7 @@ def count_missing_values(dataset_path: pd.DataFrame, output: bool = False) -> pd
     Count the number of missing values in each column of the dataset.
 
     Returns:
-    pd.Series: Series containing the count of missing values for each column.
+    pd.DataFrame: DataFrame containing the count of missing values for each column.
     """
 
     # Count missing values in each column
@@ -13,7 +13,13 @@ def count_missing_values(dataset_path: pd.DataFrame, output: bool = False) -> pd
     missing_counts = pd.DataFrame(missing_counts[missing_counts > 0], columns=['Missing Count'])
 
     if output:
-        print(missing_counts)
+        if missing_counts.empty:
+            print("No missing values found in the dataset.")
+        else:
+            for index in missing_counts.index:
+                print(f"Column {index} has {missing_counts.loc[index, 'Missing Count']: 4d} missing values.")
+                print("With unique values:")
+                print(dataset_path[index].unique())
     
     return missing_counts
 
@@ -30,5 +36,5 @@ if __name__ == "__main__":
 
         x_train = pd.read_csv(train_data_path, header = None if dataset == 'Arrhythmia Data Set' else 0)
 
-        print(count_missing_values(x_train))
+        count_missing_values(x_train, True)
 
