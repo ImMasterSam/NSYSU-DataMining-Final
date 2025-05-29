@@ -1,11 +1,14 @@
 import pandas as pd
 import numpy as np
 
-from Classifiers.classifier import Classifier
 from args import *
+from Classifiers.classifier import Classifier
+from Clusters.KMeans import KMeansCluster
 
 from observation.count_missing import count_missing_values
 from tools.Imputation import impute_missing_values
+
+KMeans = KMeansCluster(n_clusters = 5, max_iter = 300, tol = 1e-4)
 
 def testA_main():
 
@@ -49,7 +52,12 @@ def testA_main():
 
             model: Classifier = model_options[model_name]           # 建立模型
             model.fit(x_train, y_train)                             # 訓練模型
-            model.score(x_test, y_test, output = True)              # 測試模型     
+            model.score(x_test, y_test, output = True)              # 測試模型   
+
+            y_classified = model.predict(x_test)                    # 預測結果
+            y_predict = KMeans.fit_predict(x_test, y_classified)    # KMeans 分群 
+
+            print(y_predict)
 
 
 if __name__ == "__main__":
