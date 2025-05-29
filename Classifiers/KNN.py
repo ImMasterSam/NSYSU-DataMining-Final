@@ -5,8 +5,8 @@ from sklearn.neighbors import KNeighborsClassifier
 
 class KNNClassifier(Classifier):
 
-    def __init__(self, k: int, normDistance: int = 2, normalize: bool = True):
-        super().__init__('KNN Classifier', normalize)
+    def __init__(self, k: int, normDistance: int = 2, normalize: bool = True, proba: bool = False, threshold: float = 0.7):
+        super().__init__('KNN Classifier', normalize, proba, threshold)
         self.k = k
         self.normDis = normDistance
         self.clf = KNeighborsClassifier(n_neighbors = k, p = normDistance)
@@ -25,6 +25,17 @@ class KNNClassifier(Classifier):
 
         if self.normalize:
             x_test = self.scaler.transform(x_test)
-        
-        y_predict = self.clf.predict(x_test)
+
+        if self.proba:
+            y_proba = self.clf.predict_proba(x_test)
+
+            # 找出最大機率的類別及其機率
+            max_proba = np.max(y_proba, axis=1)
+            max_class_idx = np.argmax(y_proba, axis=1)
+            # 只保留機率大於 threshold 的標籤，否則設為 None 或其他標記
+            y_predict = np.where(max_proba >= self.threshold,
+                                 self.clf.classes_[max_class_idx], -1)
+        else:
+            y_predict = self.clf.predict(x_test)
+
         return y_predict

@@ -6,10 +6,13 @@ from sklearn.preprocessing import StandardScaler
 
 class Classifier:
 
-    def __init__(self, name: str, normalize: bool = True):
+    def __init__(self, name: str, normalize: bool = True, proba: bool = False, threshold: float = 0.5):
         self.name = name
         self.normalize = normalize
         self.scaler = StandardScaler()
+
+        self.proba = proba
+        self.threshold = threshold
 
     def fit(self, x_train: pd.DataFrame, y_train: pd.DataFrame):
         pass
