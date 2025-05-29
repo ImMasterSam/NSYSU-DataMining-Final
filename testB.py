@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-from scipy.stats import mode
 
 from args import *
 from Classifiers.classifier import Classifier
@@ -10,15 +9,6 @@ from observation.count_missing import count_missing_values
 from tools.Imputation import impute_missing_values
 
 KMeans = KMeansCluster(n_clusters = 2, max_iter = 300, tol = 1e-4)
-
-def best_map(true_labels, cluster_labels):
-    label_map = {}
-    for c in np.unique(cluster_labels):
-        mask = (cluster_labels == c)
-        if np.any(mask):
-            mapped = mode(true_labels[mask], keepdims=True)[0][0]
-            label_map[c] = mapped
-    return np.array([label_map[c] for c in cluster_labels])
 
 def testB_main():
       

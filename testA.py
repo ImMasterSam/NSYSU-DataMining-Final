@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-from scipy.stats import mode
 
 from args import *
 from Classifiers.classifier import Classifier

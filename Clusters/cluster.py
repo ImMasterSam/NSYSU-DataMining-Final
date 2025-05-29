@@ -17,7 +17,8 @@ class Cluster:
         accuracy = np.mean(mapped_labels == y_test)
         if output:
             print(f"{self.name} Score:  {accuracy * 100:.2f} %")
-            print(mapped_labels.ravel())
+            print("Result:\n", mapped_labels.ravel())
+            print()
         return accuracy
     
     def best_map(self, true_labels, cluster_labels):
