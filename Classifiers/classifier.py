@@ -26,7 +26,7 @@ class Classifier:
         accuracy = np.mean(y_predict == y_test.to_numpy().astype(int))
         if output:
             print(f"{self.name} Score:  {accuracy * 100:.2f} %")
-            print(y_predict)
+            # print(y_predict)
         return accuracy
 
     def analysis(self, x_test: pd.DataFrame, y_test : pd.Series, output: bool = False) -> dict:
