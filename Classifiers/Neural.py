@@ -4,8 +4,8 @@ from Classifiers.classifier import Classifier
 
 class NeuralNetClassifier(Classifier):
 
-    def __init__(self, n_hidden: int = 10, learning_rate: float = 0.001, n_iters: int = 1000, normalize: bool = True):
-        super().__init__('Neural Network Classifier', normalize)
+    def __init__(self, n_hidden: int = 10, learning_rate: float = 0.001, n_iters: int = 1000, normalize: bool = True, proba: bool = False, threshold: float = 0.7):
+        super().__init__('Neural Network Classifier', normalize, proba, threshold)
         self.n_hidden = n_hidden
         self.lr = learning_rate
         self.n_iters = n_iters
@@ -91,13 +91,24 @@ class NeuralNetClassifier(Classifier):
         A1 = self._sigmoid(Z1)
         Z2 = np.dot(A1, self.params['W2']) + self.params['b2']
         A2 = self._softmax(Z2)
-        predictions = np.argmax(A2, axis=1)
         
-        # 將數字預測映射回原始類別標籤
-        if hasattr(self, 'class_mapping'):
+        inv_mapping = {v: k for k, v in self.class_mapping.items()}
+
+        if self.proba:
+            # 找出最大機率及其類別
+            max_proba = np.max(A2, axis=1)
+            max_class_idx = np.argmax(A2, axis=1)
             # 反轉映射字典
-            inv_mapping = {v: k for k, v in self.class_mapping.items()}
-            # 將預測映射回原始類別標籤
-            predictions = np.array([inv_mapping[pred] for pred in predictions])
+            # 只保留機率大於 threshold 的標籤，否則為 None
+            predictions = np.array([
+                inv_mapping[idx] if prob >= self.threshold else -1
+                for idx, prob in zip(max_class_idx, max_proba)
+            ])
+        else:
+            predictions = np.argmax(A2, axis=1)
+            # 將數字預測映射回原始類別標籤
+            if hasattr(self, 'class_mapping'):
+                # 將預測映射回原始類別標籤
+                predictions = np.array([inv_mapping[pred] for pred in predictions])
             
         return predictions

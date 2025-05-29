@@ -6,7 +6,7 @@ from sklearn.preprocessing import StandardScaler
 
 class Classifier:
 
-    def __init__(self, name: str, normalize: bool = True, proba: bool = False, threshold: float = 0.5):
+    def __init__(self, name: str, normalize: bool = True, proba: bool = False, threshold: float = 0.6):
         self.name = name
         self.normalize = normalize
         self.scaler = StandardScaler()
