@@ -68,14 +68,7 @@ def testB_main():
             model.score(x_test, y_test, output = True)              # 測試模型   
 
             y_classified = model.predict(x_test)                    # 預測結果
-            y_predict = KMeans.fit_predict(x_test, y_classified)    # KMeans 分群 
-            true_labels = y_test.to_numpy().astype(int)
-            mapped_labels = best_map(true_labels, y_predict).ravel() # 將分群結果映射到真實標籤
-
-            print(f"Accuracy after KMeans clustering: {np.mean(mapped_labels == true_labels) * 100:.2f} %")
-
-            # print(y_classified)
-            print(mapped_labels)
+            KMeans.score(x_test, y_classified, y_test, True)        # KMeans 分群 
 
 
 if __name__ == "__main__":

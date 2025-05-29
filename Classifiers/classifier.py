@@ -23,9 +23,11 @@ class Classifier:
     def score(self, x_test: pd.DataFrame, y_test : pd.Series, output: bool = False) -> float:
         ''' 輸出準確度 Accuracy '''
         y_predict = self.predict(x_test)
-        accuracy = np.mean(y_predict == y_test.to_numpy().astype(int))
+        known_mask = (y_predict != -1)
+        accuracy = np.mean(y_predict[known_mask] == y_test[known_mask].to_numpy().astype(int))
         if output:
-            print(f"{self.name} Score:  {accuracy * 100:.2f} %")
+            print(f"{self.name} Score:  {accuracy * 100:.2f} %", end=' ')
+            print("(with known labels)" if self.proba else "")
             # print(y_predict)
         return accuracy
 

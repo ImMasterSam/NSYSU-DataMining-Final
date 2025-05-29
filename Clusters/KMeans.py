@@ -1,9 +1,12 @@
 import numpy as np
+import pandas as pd
 
+from Clusters.cluster import Cluster
 
-class KMeansCluster:
+class KMeansCluster(Cluster):
 
     def __init__(self, n_clusters=3, max_iter=300, tol=1e-4):
+        super().__init__(name = 'KMeans Cluster')
         self.n_clusters = n_clusters
         self.max_iter = max_iter
         self.tol = tol
@@ -36,6 +39,7 @@ class KMeansCluster:
 
         # 將分群結果回填到原 labels
         result = labels.copy()
-        result[unknown_mask] = cluster_labels + 9
+        result[unknown_mask] = cluster_labels + 100 # 假設分群結果從 100 開始編號，避免與原標籤衝突
 
         return result
+    
