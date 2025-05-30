@@ -5,8 +5,7 @@ from args import *
 from Classifiers.classifier import Classifier
 from Clusters.KMeans import KMeansCluster
 
-from observation.count_missing import count_missing_values
-from tools.Imputation import impute_missing_values
+from tools.DataHandler import data_preprocess
 
 KMeans = KMeansCluster(n_clusters = 5, max_iter = 300, tol = 1e-4)
 
@@ -28,10 +27,6 @@ def testA_main():
     y_train = pd.read_csv(train_label_path, header = None)
     print("X_train shape:", x_train.shape, ", Y_train shape:", y_train.shape)
     
-    print("Imputing missing values in train data...")
-    impute_missing_values(x_train, 'mean')
-    count_missing_values(x_train, True)
-    
     # Handling Test Data
 
     print("Loading Test Data...")
@@ -44,9 +39,10 @@ def testA_main():
     y_test = pd.read_csv(test_label_path, header = None)
     print("X_test shape:", x_test.shape, ", Y_test shape:", y_test.shape)
     
-    print("Imputing missing values in test data...")
-    impute_missing_values(x_test, 'mean')
-    count_missing_values(x_test, True)
+    # 資料預處理
+    data_preprocess(x_train, x_test)
+    print("X_train shape:", x_train.shape, ", X_test shape:", x_test.shape)
+    print("Data preprocessing completed.\n")
 
     for model_name in models:
 
