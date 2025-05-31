@@ -54,8 +54,8 @@ def data_preprocessB(train_dataset: pd.DataFrame, test_dataset: pd.DataFrame) ->
     constant_filter(train_dataset, test_dataset, 0.95)
 
     # 檢查資料集是否有高度相關的特徵
-    print("Checking for highly correlated features...")
-    correlation_filter(train_dataset, test_dataset, 0.8, 'pearson')
+    # print("Checking for highly correlated features...")
+    # correlation_filter(train_dataset, test_dataset, 0.8, 'pearson')
 
     # 檢查資料集是否有缺失值
     if count_missing_values(train_dataset, False).size > 0:
