@@ -8,7 +8,7 @@ from tools.Imputation import count_missing_values, impute_missing_values
 from tools.Filters import small_sample_filter, constant_filter, correlation_filter
 
 def data_preprocessA(train_dataset: pd.DataFrame, train_label: pd.DataFrame, test_dataset: pd.DataFrame) -> None:
-    '''資料預處理函式，檢查並填補缺失值'''
+    '''資料預處理函式，針對 Arrhythmia Data Set 進行處理'''
 
     print("\nData preprocessing started...")
 
@@ -45,7 +45,7 @@ def data_preprocessA(train_dataset: pd.DataFrame, train_label: pd.DataFrame, tes
     train_label[train_label.columns[0]] = y_res
 
 def data_preprocessB(train_dataset: pd.DataFrame, test_dataset: pd.DataFrame) -> None:
-    '''資料預處理函式，檢查並填補缺失值'''
+    '''資料預處理函式，針對 gene expression cancer RNA-Seq Data Set 進行處理'''
 
     print("\nData preprocessing started...")
 

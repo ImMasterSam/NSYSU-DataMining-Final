@@ -39,7 +39,7 @@ if __name__ == "__main__":
             # 繪製訓練資料的類別分佈
             value_counts = y_train.iloc[:, 0].value_counts()
             print(value_counts)
-            ax[0].pie(value_counts, labels = value_counts.index)
+            ax[0].pie(value_counts, labels = value_counts.index, autopct='%1.1f%%')
             ax[0].set_title('Arrhythmia')  # 圖標題
 
             # 資料預處理
@@ -48,10 +48,12 @@ if __name__ == "__main__":
             # 繪製處理後的訓練資料類別分佈)
             value_counts = y_train.iloc[:, 0].value_counts()
             print(value_counts)
-            ax[1].pie(value_counts, labels = value_counts.index)
+            ax[1].pie(value_counts, labels = value_counts.index, autopct='%1.1f%%')
             ax[1].set_title('Arrhythmia (After Resample)')  # 圖標題
             plt.tight_layout()
             plt.legend()
+
+            plt.savefig(f"./observation/Label counts.png", dpi = 600)
             plt.show()
 
         else:
