@@ -6,6 +6,7 @@ from Classifiers.classifier import Classifier
 from Clusters.KMeans import KMeansCluster
 
 from tools.DataHandler import data_preprocessA
+from tools.makepicture import plot_classifier_and_cluster #畫圖
 
 KMeans = KMeansCluster(n_clusters = 5, max_iter = 300, tol = 1e-4)
 
@@ -48,8 +49,11 @@ def testA_main():
 
             y_classified = model.predict(x_test)                    # 預測結果
             KMeans.score(x_test, y_classified, y_test, True)        # KMeans 分群 
+        
+            cluster_labels = KMeans.fit_predict(x_test, y_classified) # 畫圖用
+            plot_classifier_and_cluster(x_test.values,y_classified,cluster_labels,title_suffix=f"_{model_name}_Arrhythmia",subfolder="testA") # 畫圖
+    
 
-            
 
 if __name__ == "__main__":
 
