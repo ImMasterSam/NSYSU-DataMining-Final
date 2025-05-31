@@ -32,10 +32,7 @@ class KNNClassifier(Classifier):
             # 找出最大機率的類別及其機率
             max_proba = np.max(y_proba, axis=1)
             max_class_idx = np.argmax(y_proba, axis=1)
-
-            print(f"Max probabilities: min={max_proba.min():.6f}, max={max_proba.max():.6f}")
-            print(f"Number of predictions >= {self.threshold}: {np.sum(max_proba >= self.threshold)}")
-
+            
             # 只保留機率大於 threshold 的標籤，否則設為 None 或其他標記
             y_predict = np.where(max_proba >= self.threshold,
                                  self.clf.classes_[max_class_idx], -1)
