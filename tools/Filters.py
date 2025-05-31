@@ -2,6 +2,20 @@ import pandas as pd
 import numpy as np
 from typing import Literal
 
+def small_sample_filter(train_dataset: pd.DataFrame,
+                       train_label: pd.DataFrame,
+                       num_samples: int = 5) -> None:
+    '''篩選樣本數量少於指定數量的特徵列，過濾掉樣本數量少於 num_samples 的列。'''
+
+    labels_count = train_label.iloc[:, 0].value_counts()
+    small_sample_classes = labels_count[labels_count < num_samples].index.tolist()
+    
+    remove_idx = train_label.iloc[:, 0].isin(small_sample_classes)
+    # 直接 in-place 過濾
+    train_dataset.drop(train_dataset.index[remove_idx], inplace=True)
+    train_label.drop(train_label.index[remove_idx], inplace=True)
+
+
 def constant_filter(train_dataset: pd.DataFrame,
                     test_dataset: pd.DataFrame,
                     threshold: float = 0.95) -> None:

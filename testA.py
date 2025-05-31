@@ -5,7 +5,7 @@ from args import *
 from Classifiers.classifier import Classifier
 from Clusters.KMeans import KMeansCluster
 
-from tools.DataHandler import data_preprocess
+from tools.DataHandler import data_preprocessA
 
 KMeans = KMeansCluster(n_clusters = 5, max_iter = 300, tol = 1e-4)
 
@@ -22,8 +22,6 @@ def testA_main():
     train_label_path = f"./dataset/{dataset}/train_label.csv"
 
     x_train = pd.read_csv(train_data_path, header = None)
-    if dataset == 'gene expression cancer RNA-Seq Data Set':
-        x_train = x_train.set_index('id')
     y_train = pd.read_csv(train_label_path, header = None)
     print("X_train shape:", x_train.shape, ", Y_train shape:", y_train.shape)
     
@@ -34,13 +32,11 @@ def testA_main():
     test_label_path = f"./dataset/{dataset}/test_label.csv"
 
     x_test = pd.read_csv(test_data_path, header = None)
-    if dataset == 'gene expression cancer RNA-Seq Data Set':
-        x_test = x_test.set_index('id')
     y_test = pd.read_csv(test_label_path, header = None)
     print("X_test shape:", x_test.shape, ", Y_test shape:", y_test.shape)
     
     # 資料預處理
-    data_preprocess(x_train, x_test)
+    data_preprocessA(x_train, y_train, x_test)
     print("X_train shape:", x_train.shape, ", X_test shape:", x_test.shape)
     print("Data preprocessing completed.\n")
 

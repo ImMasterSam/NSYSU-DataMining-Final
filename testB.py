@@ -5,7 +5,7 @@ from args import *
 from Classifiers.classifier import Classifier
 from Clusters.KMeans import KMeansCluster
 
-from tools.DataHandler import data_preprocess
+from tools.DataHandler import data_preprocessB
 
 KMeans = KMeansCluster(n_clusters = 2, max_iter = 300, tol = 1e-4)
 
@@ -36,7 +36,7 @@ def testB_main():
     print("X_test shape:", x_test.shape, ", Y_test shape:", y_test.shape)
 
     # 資料預處理
-    data_preprocess(x_train, x_test)
+    data_preprocessB(x_train, x_test)
     print("X_train shape:", x_train.shape, ", X_test shape:", x_test.shape)
     print("Data preprocessing completed.\n")
 
