@@ -6,7 +6,7 @@ from sklearn.svm import SVC
 class SVMClassifier(Classifier):
     def __init__(self, kernel: str = "rbf", normalize: bool = True, proba: bool = False, threshold: float = 0.6):
         super().__init__(f'Kernel SVM ({kernel}) Classifier', normalize, proba, threshold)
-        self.clf = SVC(kernel = kernel, probability = proba)
+        self.clf = SVC(kernel = kernel, probability = proba, class_weight = 'balanced')
 
     def fit(self, x_train: pd.DataFrame, y_train: pd.Series):
         x_train = x_train.astype(float).to_numpy()
