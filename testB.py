@@ -57,12 +57,12 @@ def testB_main():
             y_classified = model.predict(x_test)                    # 預測結果
             KMeans.score(x_test, y_classified, y_test, True)        # KMeans 分群 
 
-            plot_feature_scatter_double(
-                x_test,
-                y_classified,
-                title_suffix="_Test_Compare",
-                subfolder=f"trainB/{model_name}"
-            )
+            # plot_feature_scatter_double(
+            #     x_test,
+            #     y_classified,
+            #     title_suffix="_Test_Compare",
+            #     subfolder=f"trainB/{model_name}"
+            # )
 
 if __name__ == "__main__":
 

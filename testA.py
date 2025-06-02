@@ -55,13 +55,13 @@ def testA_main():
             # 預測訓練資料
             y_train_pred = model.predict(x_train)
 
-            # 畫訓練資料的前處理與分類結果
-            plot_feature_scatter_double(
-                x_train,
-                y_train_pred,  # 這裡用訓練資料的分類結果
-                title_suffix="_Train_Compare",
-                subfolder=f"trainA/{model_name}"
-            )
+            # # 畫訓練資料的前處理與分類結果
+            # plot_feature_scatter_double(
+            #     x_train,
+            #     y_train_pred,  # 這裡用訓練資料的分類結果
+            #     title_suffix="_Train_Compare",
+            #     subfolder=f"trainA/{model_name}"
+            # )
 
 if __name__ == "__main__":
 
