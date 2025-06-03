@@ -1,4 +1,4 @@
-from sys import argv
+import sys
 import pandas as pd
 import numpy as np
 import json
@@ -19,8 +19,6 @@ y_test = pd.DataFrame()
 def read_dataset(dataset_name):
 
     global x_train, y_train, x_test, y_test
-
-    print(f'\n ----------    {dataset_name}     --------------\n')
 
     # Read Train Data
     print("Loading Train Data...")
@@ -59,53 +57,56 @@ def testA_main():
     params_filepath = 'models_params_A.json'
     model_options = {}
 
-    if len(argv) >= 2:
-        if argv[1] == '-t':
-            model_options = hyperparameter_tuning(x_train, y_train, 5, params_filepath)  # 超參數調整
-        else:
-            print("Invalid argument. Use '-t' for hyperparameter tuning.")
-            return
+    if len(sys.argv) >= 2 and ('-t' in sys.argv[1:]):
+        model_options = hyperparameter_tuning(x_train, y_train, 5, params_filepath)
     else:
         try:
             models_params = json.load(open(params_filepath, 'r'))
             model_options = {model_name: empty_models[model_name].set_params(**params)
                             for model_name, params in models_params.items()}
+            print(f"\n--- 參數設定 ---")
+            for model_name, params in models_params.items():
+                print(f"{model_name}: {params}")
+            print(f"----------------\n")
         except FileNotFoundError:
             raise FileNotFoundError(f"File {params_filepath} not found. Please run with '-t' to generate it.")
     
 
     for model_name in models:
 
-            model: Classifier = model_options[model_name]                   # 建立模型
-            model.fit(x_train, y_train)                                     # 訓練模型
-            model.analysis(x_test, y_test, y_train, output = False)         # 測試模型   
+        model: Classifier = model_options[model_name]                                       # 建立模型
+        model.fit(x_train, y_train)                                                         # 訓練模型
+        model.analysis(x_test, y_test, y_train, output = False)                             # 測試模型   
 
-            y_classified = model.predict(x_test)                                    # 預測結果
-            best_score = 0.0
-            best_k = 0
-            for k in range(1, 10):
-                KMeans = KMeansCluster(n_clusters = k, max_iter = 300, tol = 1e-4)
-                acc = KMeans.score(x_test, y_classified, y_train, y_test, output = False)      # KMeans 分群 
-                # print(f"{model_name} KMeans Score for k={k}: {acc * 100:.2f} %")
-                best_score = max(best_score, acc)
-                if acc > best_score:
-                    best_k = k
-                    best_score = acc
-            
-            print(f"{model_name} -> KMeans[{best_k}] Score: {best_score * 100:.2f} %\n")
+        y_classified = model.predict(x_test)                                                # 預測結果
+        best_score = 0.0
+        best_k = 0
+        for k in range(1, 10):
+            KMeans = KMeansCluster(n_clusters = k, max_iter = 300, tol = 1e-4)
+            acc = KMeans.score(x_test, y_classified, y_train, y_test, output = False)       # KMeans 分群 
+            # print(f"{model_name} KMeans Score for k={k}: {acc * 100:.2f} %")
+
+            if acc > best_score:
+                best_k = k
+                best_score = acc
         
-            # # 預測訓練資料
-            # y_train_pred = model.predict(x_train)
+        print(f"{model_name} -> KMeans[{best_k}] Score: {best_score * 100:.2f} %\n")
+    
+        # # 預測訓練資料
+        # y_train_pred = model.predict(x_train)
 
-            # # 畫訓練資料的前處理與分類結果
-            # plot_feature_scatter_double(
-            #     x_train,
-            #     y_train_pred,  # 這裡用訓練資料的分類結果
-            #     title_suffix="_Train_Compare",
-            #     subfolder=f"trainA/{model_name}"
-            # )
+        # # 畫訓練資料的前處理與分類結果
+        # plot_feature_scatter_double(
+        #     x_train,
+        #     y_train_pred,  # 這裡用訓練資料的分類結果
+        #     title_suffix="_Train_Compare",
+        #     subfolder=f"trainA/{model_name}"
+        # )
 
 if __name__ == "__main__":
+
+    if len(sys.argv) >= 2 and ('-l' in sys.argv[1:]):
+        sys.stdout = open('output_A.log', 'w+', encoding='utf-8')
 
     testA_main()
                 

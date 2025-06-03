@@ -1,4 +1,4 @@
-from sys import argv
+import sys
 import pandas as pd
 import numpy as np
 import json
@@ -66,12 +66,8 @@ def testB_main():
     params_filepath = 'models_params_A.json'
     model_options = {}
 
-    if len(argv) >= 2:
-        if argv[1] == '-t':
-            model_options = hyperparameter_tuning(x_train, y_train, 2, params_filepath)  # 超參數調整
-        else:
-            print("Invalid argument. Use '-t' for hyperparameter tuning.")
-            return
+    if len(sys.argv) >= 2 and ('-t' in sys.argv[1:]):
+        model_options = hyperparameter_tuning(x_train, y_train, 5, params_filepath)
     else:
         try:
             models_params = json.load(open(params_filepath, 'r'))
@@ -107,5 +103,8 @@ def testB_main():
             # )
 
 if __name__ == "__main__":
+
+    if len(sys.argv) >= 2 and ('-l' in sys.argv[1:]):
+        sys.stdout = open('output_B.log', 'w+', encoding='utf-8')
 
     testB_main()      

@@ -1,0 +1,51 @@
+
+ ----------    Arrhythmia Data Set     --------------
+
+Loading Train Data...
+X_train shape: (293, 279) , Y_train shape: (293, 1)
+Loading Test Data...
+X_test shape: (158, 279) , Y_test shape: (158, 1)
+
+Data preprocessing started...
+Filtering out features with small sample sizes...
+Checking for constant features...
+Checking for highly correlated features...
+Imputing missing values in train data...
+Imputing missing values in test data...
+Resampling with SMOTE & Tomek...
+Updating train dataset and label with resampled data...
+X_train shape: (1162, 111) , X_test shape: (158, 111)
+Data preprocessing completed.
+
+
+--- 參數設定 ---
+K Nearest Neighbors: {'k': 11, 'normDistance': 1, 'normalize': True, 'threshold': 0.8, 'weights': 'uniform'}
+Neural Network: {'learning_rate': 0.01, 'n_hidden': 50, 'n_iters': 3000, 'normalize': True, 'threshold': 0.8}
+Random Forest: {'class_weight': 'balanced_subsample', 'max_depth': None, 'min_samples_split': 2, 'n_estimators': 50, 'normalize': True, 'threshold': 0.8}
+Kernel SVM (linear): {'C': 0.8000000000000003, 'class_weight': 'balanced', 'kernel': 'linear', 'normalize': True, 'threshold': 0.8}
+Kernel SVM (poly): {'C': 0.9000000000000001, 'class_weight': None, 'degree': 2, 'kernel': 'poly', 'normalize': True, 'threshold': 0.8}
+Kernel SVM (rbf): {'C': 0.3, 'class_weight': None, 'kernel': 'rbf', 'normalize': True, 'threshold': 0.8}
+Kernel SVM (sigmoid): {'C': 0.9000000000000001, 'class_weight': None, 'kernel': 'sigmoid', 'normalize': True, 'threshold': 0.8}
+----------------
+
+KNN Classifier Accuracy = 38.61 %
+K Nearest Neighbors -> KMeans[1] Score: 25.32 %
+
+Neural Network Classifier Accuracy = 37.34 %
+Neural Network -> KMeans[2] Score: 32.28 %
+
+Random Forest Classifier Accuracy = 53.80 %
+Random Forest -> KMeans[6] Score: 32.28 %
+
+Kernel SVM (linear) Classifier Accuracy = 48.10 %
+Kernel SVM (linear) -> KMeans[3] Score: 39.87 %
+
+Kernel SVM (poly) Classifier Accuracy = 40.51 %
+Kernel SVM (poly) -> KMeans[3] Score: 36.08 %
+
+Kernel SVM (rbf) Classifier Accuracy = 34.18 %
+Kernel SVM (rbf) -> KMeans[5] Score: 32.91 %
+
+Kernel SVM (sigmoid) Classifier Accuracy = 41.14 %
+Kernel SVM (sigmoid) -> KMeans[1] Score: 32.91 %
+
