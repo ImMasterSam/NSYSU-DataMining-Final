@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from scipy.stats import mode
+import itertools
 
 class Cluster:
 
@@ -10,11 +11,11 @@ class Cluster:
     def fit_predict(self, x_train: pd.DataFrame, labels: pd.DataFrame):
         pass
     
-    def score(self, x_test: pd.DataFrame, y_classified: pd.DataFrame, y_test: pd.DataFrame, output: bool = False) -> float:
+    def score(self, x_test: pd.DataFrame, y_classified: pd.DataFrame, y_train: pd.DataFrame, y_test: pd.DataFrame, output: bool = False) -> float:
         ''' 輸出準確度 Accuracy '''
         y_test = np.array(y_test).ravel()
         y_predict = np.array(self.fit_predict(x_test, y_classified)).ravel()
-        mapped_labels = self.best_map(y_test, y_predict)
+        mapped_labels = self.best_map(y_test, y_predict, y_train)
         accuracy = np.mean(mapped_labels == y_test)
         if output:
             print(f"{self.name} Score:  {accuracy * 100:.2f} %")
@@ -22,40 +23,51 @@ class Cluster:
             print()
         return accuracy
     
-    def best_map(self, true_labels, cluster_labels):
-        ''' 將分群結果映射到真實標籤，分群標籤大於100的唯一一對一對應到未用過的編號 '''
+    def best_map(self, true_labels, cluster_labels, train_labels):
+        '''
+        用排列組合窮舉所有可能對應，找出最大正確配對數的分群標籤對應。
+        分群標籤大於100的唯一一對一對應到未用過的編號。
+        '''
+        # 將輸入轉換為一維數組
         true_labels = np.array(true_labels).ravel()
         cluster_labels = np.array(cluster_labels).ravel()
-        # 已知真實標籤
-        known_labels = sorted(set(true_labels))
-        next_label = max(known_labels) + 1 if known_labels else 1
-        # 只處理大於100的分群標籤
+        train_labels = np.array(train_labels).ravel()
+
+        known_labels = sorted(set(train_labels))
         cluster_ids = [c for c in np.unique(cluster_labels) if c >= 100]
+
+        unknown_true_labels = set(true_labels) - set(known_labels)
+
+        max_known_label = max(known_labels)
+        max_unknown_true_label = max(unknown_true_labels)
+
+        n_true = max_unknown_true_label - max_known_label
+        n_known = len(known_labels)
+        n_cluster = len(cluster_ids)
+
         # 建立混淆矩陣
-        count_matrix = np.zeros((len(cluster_ids), len(known_labels)), dtype=int)
+        count_matrix = np.zeros((n_cluster, n_true), dtype=int)
         for i, c in enumerate(cluster_ids):
-            for j, t in enumerate(known_labels):
+            for j, t in enumerate(range(max_known_label + 1, max_unknown_true_label + 1)):
                 count_matrix[i, j] = np.sum((cluster_labels == c) & (true_labels == t))
-        # 貪婪法：每次找最大值，並將該行列設為-1，確保一對一
+
+        # 用排列組合窮舉所有對應
+        best_map = None
+        best_score = -1
+        for perm in itertools.permutations(range(n_true), n_cluster):
+            score = 0
+            for i, j in enumerate(perm):
+                score += count_matrix[i, j]
+            if score > best_score:
+                best_score = score
+                best_map = perm
+
+        # 根據最佳配對，將 cluster_id 對應到 known_label
         label_map = {}
-        used_true = set()
-        used_cluster = set()
-        for _ in range(min(len(cluster_ids), len(known_labels))):
-            idx = np.unravel_index(np.argmax(count_matrix), count_matrix.shape)
-            ci, tj = idx
-            if count_matrix[ci, tj] == 0:
-                break
-            label_map[cluster_ids[ci]] = known_labels[tj]
-            used_true.add(known_labels[tj])
-            used_cluster.add(cluster_ids[ci])
-            count_matrix[ci, :] = -1
-            count_matrix[:, tj] = -1
-        # 剩下未配對的分群標籤，從 next_label 開始往上編號
-        for c in cluster_ids:
-            if c not in label_map:
-                label_map[c] = next_label
-                next_label += 1
-        # 其他分群標籤（<=100）直接對應原標籤
+        for i, j in enumerate(best_map):
+            label_map[cluster_ids[i]] = len(known_labels) + (j + 1)
+
+        # 其他分群標籤（<100）直接對應原標籤
         for c in np.unique(cluster_labels):
             if c < 100:
                 label_map[c] = c

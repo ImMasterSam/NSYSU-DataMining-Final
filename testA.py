@@ -65,7 +65,7 @@ def testA_main():
             model.analysis(x_test, y_test, y_train, output = False)         # 測試模型   
 
             y_classified = model.predict(x_test)                            # 預測結果
-            KMeans.score(x_test, y_classified, y_test, output = True)      # KMeans 分群 
+            KMeans.score(x_test, y_classified, y_train, y_test, output = True)      # KMeans 分群 
         
             # # 預測訓練資料
             # y_train_pred = model.predict(x_train)
