@@ -11,33 +11,45 @@ from tools.Hyperparameter import hyperparameter_tuning
 from tools.DataHandler import data_preprocessA
 from tools.makepicture import * #畫圖
 
-KMeans = KMeansCluster(n_clusters = 7, max_iter = 300, tol = 1e-4)
+x_train = pd.DataFrame()
+y_train = pd.DataFrame()
+x_test = pd.DataFrame()
+y_test = pd.DataFrame()
+
+def read_dataset(dataset_name):
+
+    global x_train, y_train, x_test, y_test
+
+    print(f'\n ----------    {dataset_name}     --------------\n')
+
+    # Read Train Data
+    print("Loading Train Data...")
+    train_data_path = f"./dataset/{dataset_name}/train_data.csv"
+    train_label_path = f"./dataset/{dataset_name}/train_label.csv"
+
+    x_train = pd.read_csv(train_data_path, header=None)
+    y_train = pd.read_csv(train_label_path, header=None)
+    print("X_train shape:", x_train.shape, ", Y_train shape:", y_train.shape)
+
+    # Read Test Data
+    print("Loading Test Data...")
+    test_data_path = f"./dataset/{dataset_name}/test_data.csv"
+    test_label_path = f"./dataset/{dataset_name}/test_label.csv"
+
+    x_test = pd.read_csv(test_data_path, header=None)
+    y_test = pd.read_csv(test_label_path, header=None)
+    print("X_test shape:", x_test.shape, ", Y_test shape:", y_test.shape)
 
 def testA_main():
+
+    global x_train, y_train, x_test, y_test
 
     dataset = 'Arrhythmia Data Set'  # Default dataset
 
     print(f'\n ----------    {dataset}     --------------\n')
 
-    # Handling Train Data
-
-    print("Loading Train Data...")
-    train_data_path = f"./dataset/{dataset}/train_data.csv"
-    train_label_path = f"./dataset/{dataset}/train_label.csv"
-
-    x_train = pd.read_csv(train_data_path, header = None)
-    y_train = pd.read_csv(train_label_path, header = None)
-    print("X_train shape:", x_train.shape, ", Y_train shape:", y_train.shape)
-    
-    # Handling Test Data
-
-    print("Loading Test Data...")
-    test_data_path = f"./dataset/{dataset}/test_data.csv"
-    test_label_path = f"./dataset/{dataset}/test_label.csv"
-
-    x_test = pd.read_csv(test_data_path, header = None)
-    y_test = pd.read_csv(test_label_path, header = None)
-    print("X_test shape:", x_test.shape, ", Y_test shape:", y_test.shape)
+    # Read dataset
+    read_dataset(dataset)
     
     # 資料預處理
     data_preprocessA(x_train, y_train, x_test)

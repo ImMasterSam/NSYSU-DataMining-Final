@@ -34,7 +34,7 @@ def data_preprocessA(train_dataset: pd.DataFrame, train_label: pd.DataFrame, tes
         impute_missing_values(test_dataset, 'mean')
 
     # 進行資料過採樣
-    print("Over-sampling with SMOTE & Tomek...")
+    print("Resampling with SMOTE & Tomek...")
     X_res, y_res = SMOTETomek().fit_resample(train_dataset, train_label)
     # print("Over-sampling with SMOTE...")
     # X_oversample_res, y_oversample_res = SMOTE().fit_resample(train_dataset, train_label)
