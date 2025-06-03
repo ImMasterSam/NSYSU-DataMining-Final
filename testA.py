@@ -64,8 +64,15 @@ def testA_main():
             model.fit(x_train, y_train)                                     # 訓練模型
             model.analysis(x_test, y_test, y_train, output = False)         # 測試模型   
 
-            y_classified = model.predict(x_test)                            # 預測結果
-            KMeans.score(x_test, y_classified, y_train, y_test, output = True)      # KMeans 分群 
+            y_classified = model.predict(x_test)                                    # 預測結果
+            best_score = 0.0
+            for k in range(1, 10):
+                KMeans = KMeansCluster(n_clusters = k, max_iter = 300, tol = 1e-4)
+                acc = KMeans.score(x_test, y_classified, y_train, y_test, output = False)      # KMeans 分群 
+                # print(f"{model_name} KMeans Score for k={k}: {acc * 100:.2f} %")
+                best_score = max(best_score, acc)
+            
+            print(f"{model_name} KMeans Score: {best_score * 100:.2f} %\n")
         
             # # 預測訓練資料
             # y_train_pred = model.predict(x_train)

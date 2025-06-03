@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
-from scipy.stats import mode
-import itertools
+from itertools import permutations
 
 class Cluster:
 
@@ -42,11 +41,10 @@ class Cluster:
         max_unknown_true_label = max(unknown_true_labels)
 
         n_true = max_unknown_true_label - max_known_label
-        n_known = len(known_labels)
         n_cluster = len(cluster_ids)
 
         # 建立混淆矩陣
-        count_matrix = np.zeros((n_cluster, n_true), dtype=int)
+        count_matrix = np.zeros((n_cluster, max(n_true, n_cluster)), dtype=int)
         for i, c in enumerate(cluster_ids):
             for j, t in enumerate(range(max_known_label + 1, max_unknown_true_label + 1)):
                 count_matrix[i, j] = np.sum((cluster_labels == c) & (true_labels == t))
@@ -54,7 +52,7 @@ class Cluster:
         # 用排列組合窮舉所有對應
         best_map = None
         best_score = -1
-        for perm in itertools.permutations(range(n_true), n_cluster):
+        for perm in permutations(range(max(n_true, n_cluster)), n_cluster):
             score = 0
             for i, j in enumerate(perm):
                 score += count_matrix[i, j]
