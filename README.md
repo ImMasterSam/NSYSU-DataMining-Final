@@ -47,18 +47,18 @@
 
 ### Arrhythmia 資料集 - 結果
 
-### 純分類結果
+#### 純分類結果
 | 分類器 | 準確度 Accuracy |
 |--------|-----------------|
 | KNN    | 38.61 %         | 
 | Neural Network | 37.34 %         |
-| Random Forest | 53.80 %         |
+| Random Forest | **53.80 %**         |
 | SVM (Linear) | 48.10 %         | 
 | SVM (Polynomial) | 40.51 %         |
 | SVM (RBF) | 34.18 %         |
 | SVM (Sigmoid) | 41.14 %         |
 
-### 分群後結果
+#### 分群後結果
 | 分類器 | 分群器 | 群集數量 | 準確度 Accuracy |
 |--------|--------|--------|-----|
 | KNN    | K-Means | 1   | 25.32 % |
@@ -92,7 +92,7 @@
 |--------|-----------------|
 | KNN    | 53 %         | 
 | Neural Network | 47 %         |
-| Random Forest | 94 %         |
+| Random Forest | **94 %**         |
 | SVM (Linear) | 55 %         | 
 | SVM (Polynomial) | 65 %         |
 | SVM (RBF) | 72 %         |
@@ -103,7 +103,7 @@
 |--------|--------|--------|-----|
 | KNN    | K-Means | 2   | 52.41 % |
 | Neural Network | K-Means | 2   | 46.99 % |
-| Random Forest | K-Means | 2   | 93.98 % |
+| Random Forest | K-Means | 2   | **93.98 %** |
 | SVM (Linear) | K-Means | 2   | 54.82 % |
 | SVM (Polynomial) | K-Means | 2   | 65.06 % |
 | SVM (RBF) | K-Means | 2   | 71.99 % |
