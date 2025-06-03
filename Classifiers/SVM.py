@@ -5,7 +5,13 @@ from sklearn.svm import SVC
 from sklearn.base import BaseEstimator
 
 class SVMClassifier(Classifier, BaseEstimator):
-    def __init__(self, kernel: str = "rbf", normalize: bool = True, proba: bool = False, threshold: float = 0.6):
+    def __init__(self,
+                 C: float = 1.0,
+                 degree: int = 3,
+                 kernel: str = "rbf",
+                 normalize: bool = True,
+                 proba: bool = False,
+                 threshold: float = 0.6):
         super().__init__(f'Kernel SVM ({kernel}) Classifier', normalize, proba, threshold)
         self.kernel = kernel
         self.clf = SVC(kernel = kernel, probability = proba, class_weight = 'balanced')

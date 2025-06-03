@@ -13,9 +13,9 @@ class Cluster:
     def score(self, x_test: pd.DataFrame, y_classified: pd.DataFrame, y_train: pd.DataFrame, y_test: pd.DataFrame, output: bool = False) -> float:
         ''' 輸出準確度 Accuracy '''
         y_test = np.array(y_test).ravel()
-        print(y_classified)
+        # print(y_classified)
         y_predict = np.array(self.fit_predict(x_test, y_classified)).ravel()
-        print(y_predict)
+        # print(y_predict)
         mapped_labels = self.best_map(y_test, y_predict, y_train)
         accuracy = np.mean(mapped_labels == y_test)
         if output:

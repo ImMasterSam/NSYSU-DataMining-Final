@@ -1,8 +1,9 @@
 import pandas as pd
 import numpy as np
 
+from imblearn.combine import SMOTETomek, SMOTEENN
 from imblearn.over_sampling import SMOTE
-from imblearn.under_sampling import TomekLinks
+from imblearn.under_sampling import NearMiss
 
 from tools.Imputation import count_missing_values, impute_missing_values
 from tools.Filters import small_sample_filter, constant_filter, correlation_filter
@@ -18,7 +19,7 @@ def data_preprocessA(train_dataset: pd.DataFrame, train_label: pd.DataFrame, tes
 
     # 檢查資料集是否有常數特徵
     print("Checking for constant features...")
-    constant_filter(train_dataset, test_dataset, 0.95)
+    constant_filter(train_dataset, test_dataset, 0.7)
 
     # 檢查資料集是否有高度相關的特徵
     print("Checking for highly correlated features...")
@@ -33,8 +34,12 @@ def data_preprocessA(train_dataset: pd.DataFrame, train_label: pd.DataFrame, tes
         impute_missing_values(test_dataset, 'mean')
 
     # 進行資料過採樣
-    print("Over-sampling with SMOTE...")
-    X_res, y_res = SMOTE().fit_resample(train_dataset, train_label)
+    print("Over-sampling with SMOTE & Tomek...")
+    X_res, y_res = SMOTETomek().fit_resample(train_dataset, train_label)
+    # print("Over-sampling with SMOTE...")
+    # X_oversample_res, y_oversample_res = SMOTE().fit_resample(train_dataset, train_label)
+    # print("Under-sampling with NearMiss...")
+    # X_res, y_res = NearMiss(version = 3).fit_resample(X_oversample_res, y_oversample_res)
 
     # 更新訓練資料集和標籤
     print("Updating train dataset and label with resampled data...")
@@ -51,7 +56,7 @@ def data_preprocessB(train_dataset: pd.DataFrame, test_dataset: pd.DataFrame) ->
 
     # 檢查資料集是否有常數特徵
     print("Checking for constant features...")
-    constant_filter(train_dataset, test_dataset, 0.95)
+    constant_filter(train_dataset, test_dataset, 0.7)
 
     # 檢查資料集是否有高度相關的特徵
     # print("Checking for highly correlated features...")

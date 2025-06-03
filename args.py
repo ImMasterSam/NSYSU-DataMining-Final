@@ -31,24 +31,29 @@ all_param_grid = {
         'threshold': [0.8]
     },
     'Kernel SVM (linear)': {
+        'C': list(np.arange(0.3, 10.1, 0.1)),
         'kernel': ['linear'],
         'normalize': [True, False],
         'class_weight': ['balanced', None],
         'threshold': [0.8]
     },
     'Kernel SVM (poly)': {
+        'C': list(np.arange(0.3, 10.1, 0.1)),
+        'degree': [2, 3, 4],  # 多項式的次數
         'kernel': ['poly'],
         'normalize': [True, False],
         'class_weight': ['balanced', None],
         'threshold': [0.8]
     },
     'Kernel SVM (rbf)': {
+        'C': list(np.arange(0.3, 10.1, 0.1)),
         'kernel': ['rbf'],
         'normalize': [True, False],
         'class_weight': ['balanced', None],
         'threshold': [0.8]
     },
     'Kernel SVM (sigmoid)': {
+        'C': list(np.arange(0.3, 10.1, 0.1)),
         'kernel': ['sigmoid'],
         'normalize': [True, False],
         'class_weight': ['balanced', None],

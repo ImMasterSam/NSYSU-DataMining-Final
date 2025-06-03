@@ -46,8 +46,10 @@ def testB_main():
 
     # Encode labels
     print("Encoding labels...")
-    unique_labels = set(y_train['Class'].unique()) | set(y_test['Class'].unique())
-    label_mapping = {label: idx for idx, label in enumerate(unique_labels)}
+    train_unique_labels = list(y_train['Class'].unique())
+    test_unique_labels = [label for label in y_test['Class'].unique() if label not in train_unique_labels]
+    all_labels = train_unique_labels + test_unique_labels
+    label_mapping = {label: idx + 1 for idx, label in enumerate(all_labels)}
     y_train['Class'] = y_train['Class'].map(label_mapping)
     y_test['Class'] = y_test['Class'].map(label_mapping)
 

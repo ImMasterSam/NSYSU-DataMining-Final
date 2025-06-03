@@ -5,12 +5,18 @@ from sklearn.ensemble import RandomForestClassifier as skRandomForest
 from sklearn.base import BaseEstimator
 
 class RandomForestClassifier(Classifier, BaseEstimator):
-    def __init__(self, n_estimators: int = 10, max_depth: int = 10, min_samples_split: int = 2, normalize: bool = True, proba: bool = False, threshold: float = 0.6):
+    def __init__(self,
+                 n_estimators: int = 10,
+                 max_depth: int = 10,
+                 min_samples_split: int = 2,
+                 normalize: bool = True,
+                 proba: bool = False,
+                 threshold: float = 0.6):
         super().__init__('Random Forest Classifier', normalize, proba, threshold)
         self.n_estimators = n_estimators
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
-        self.clf = skRandomForest(n_estimators = n_estimators, max_depth = max_depth, min_samples_split = min_samples_split)
+        self.clf = skRandomForest(n_estimators = n_estimators, max_depth = max_depth, min_samples_split = min_samples_split, n_jobs = -1)
 
     def fit(self, x_train: pd.DataFrame, y_train: pd.Series):
         x_train = x_train.to_numpy()
