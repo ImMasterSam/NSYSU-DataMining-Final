@@ -1,4 +1,4 @@
-# 資料探勘 Data Mining
+# 資料探勘 Data Mining - 第三組
 
 ## 目的說明
 ### 資料集
