@@ -2,20 +2,23 @@ import numpy as np
 import pandas as pd
 from Classifiers.classifier import Classifier
 from sklearn.ensemble import RandomForestClassifier as skRandomForest
+from sklearn.base import BaseEstimator
 
-class RandomForestClassifier(Classifier):
+class RandomForestClassifier(Classifier, BaseEstimator):
     def __init__(self, n_estimators: int = 10, max_depth: int = 10, min_samples_split: int = 2, normalize: bool = True, proba: bool = False, threshold: float = 0.6):
         super().__init__('Random Forest Classifier', normalize, proba, threshold)
+        self.n_estimators = n_estimators
+        self.max_depth = max_depth
+        self.min_samples_split = min_samples_split
         self.clf = skRandomForest(n_estimators = n_estimators, max_depth = max_depth, min_samples_split = min_samples_split)
 
     def fit(self, x_train: pd.DataFrame, y_train: pd.Series):
         x_train = x_train.to_numpy()
-        y_train = y_train.to_numpy().ravel()
-
+        y_train = np.array(y_train).ravel()
+        
         if self.normalize:
             x_train = self.scaler.fit_transform(x_train)
-
-        self.clf.fit(x_train,y_train)
+        self.clf.fit(x_train, y_train)
 
     def predict(self, x_test: pd.DataFrame):
         x_test = x_test.to_numpy()
@@ -36,3 +39,19 @@ class RandomForestClassifier(Classifier):
             y_predict = self.clf.predict(x_test)
         
         return y_predict
+
+    def get_params(self, deep=True):
+        return {
+            'n_estimators': self.n_estimators,
+            'max_depth': self.max_depth,
+            'min_samples_split': self.min_samples_split,
+            'normalize': self.normalize,
+            'proba': self.proba,
+            'threshold': self.threshold
+        }
+
+    def set_params(self, **params):
+        for key, value in params.items():
+            setattr(self, key, value)
+        self.clf = skRandomForest(n_estimators=self.n_estimators, max_depth=self.max_depth, min_samples_split=self.min_samples_split)
+        return self

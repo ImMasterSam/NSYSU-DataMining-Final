@@ -13,7 +13,7 @@ class KMeansCluster(Cluster):
         self.centroids = None
 
     def fit_predict(self, x_train, labels):
-        labels = np.array(labels)
+        labels = np.array(labels).ravel()
         unknown_mask = (labels == -1)
         x_unknown = x_train[unknown_mask]
         x_unknown = np.array(x_unknown)
@@ -23,14 +23,18 @@ class KMeansCluster(Cluster):
             return labels
 
         # 初始化 centroids
-        indices = np.random.choice(len(x_unknown), self.n_clusters, replace=False)
+        n_clusters = min(self.n_clusters, len(x_unknown))
+        indices = np.random.choice(len(x_unknown), n_clusters, replace=False)
         centroids = x_unknown[indices]
 
         for _ in range(self.max_iter):
             # 計算每個點到各中心的距離
             distances = np.linalg.norm(x_unknown[:, None] - centroids[None, :], axis=2)
             cluster_labels = np.argmin(distances, axis=1)
-            new_centroids = np.array([x_unknown[cluster_labels == i].mean(axis=0) if np.any(cluster_labels == i) else centroids[i] for i in range(self.n_clusters)])
+            new_centroids = np.array([
+                x_unknown[cluster_labels == i].mean(axis=0) if np.any(cluster_labels == i) else centroids[i]
+                for i in range(n_clusters)
+            ])
             # 收斂判斷
             if np.all(np.linalg.norm(new_centroids - centroids, axis=1) < self.tol):
                 break
@@ -42,4 +46,3 @@ class KMeansCluster(Cluster):
         result[unknown_mask] = cluster_labels + 100 # 假設分群結果從 100 開始編號，避免與原標籤衝突
 
         return result
-    

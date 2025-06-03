@@ -1,8 +1,9 @@
 ﻿import numpy as np
 import pandas as pd
 from Classifiers.classifier import Classifier
+from sklearn.base import BaseEstimator
 
-class NeuralNetClassifier(Classifier):
+class NeuralNetClassifier(Classifier, BaseEstimator):
 
     def __init__(self, n_hidden: int = 10, learning_rate: float = 0.001, n_iters: int = 1000, normalize: bool = True, proba: bool = False, threshold: float = 0.7):
         super().__init__('Neural Network Classifier', normalize, proba, threshold)
@@ -14,7 +15,8 @@ class NeuralNetClassifier(Classifier):
         self.class_mapping = {}  # 用於映射類別標籤
 
     def _sigmoid(self, z):
-        ''' Sigmoid 激活函數 '''
+        ''' Sigmoid 激活函數（防止 overflow） '''
+        z = np.clip(z, -500, 500)
         return 1 / (1 + np.exp(-z))
 
     def _sigmoid_derivative(self, z):
@@ -35,9 +37,14 @@ class NeuralNetClassifier(Classifier):
         self.params['W2'] = np.random.randn(self.n_hidden, self.n_classes)
         self.params['b2'] = np.zeros((1, self.n_classes))
 
-    def fit(self, x_train: pd.DataFrame, y_train: pd.DataFrame):
+    def fit(self, x_train: pd.DataFrame, y_train):
         x_train = x_train.astype(float).to_numpy()
-        y_train = y_train.astype(int).to_numpy()  # 確保 y_train 是列向量
+        # 統一轉成 ndarray
+        if isinstance(y_train, pd.DataFrame) or isinstance(y_train, pd.Series):
+            y_train = np.array(y_train).ravel()
+        else:
+            y_train = np.array(y_train).ravel()
+        self.y_train = y_train
 
         if self.normalize:
             x_train = self.scaler.fit_transform(x_train)
@@ -46,11 +53,9 @@ class NeuralNetClassifier(Classifier):
         # 取得唯一類別值並確保從0開始編碼
         unique_classes = np.unique(y_train)
         self.n_classes = len(unique_classes)  # 設置類別數量
-        
         # 重新映射標籤，確保從0開始
         self.class_mapping = {cls: i for i, cls in enumerate(unique_classes)}
-        mapped_y_train = np.array([self.class_mapping[y[0]] for y in y_train])
-        
+        mapped_y_train = np.array([self.class_mapping[y] for y in y_train])
         # 使用重新映射後的標籤進行 one-hot 編碼
         y_train_one_hot = np.eye(self.n_classes)[mapped_y_train]  # One-hot 編碼
 
@@ -64,7 +69,7 @@ class NeuralNetClassifier(Classifier):
             A2 = self._softmax(Z2)
 
             # 計算 loss (交叉熵)
-            loss = -np.mean(np.sum(y_train_one_hot * np.log(A2 + 1e-8), axis=1))
+            # loss = -np.mean(np.sum(y_train_one_hot * np.log(A2 + 1e-8), axis=1))
 
             # Backward pass
             dZ2 = A2 - y_train_one_hot
@@ -112,3 +117,18 @@ class NeuralNetClassifier(Classifier):
                 predictions = np.array([inv_mapping[pred] for pred in predictions])
             
         return predictions
+
+    def get_params(self, deep=True):
+        return {
+            'n_hidden': self.n_hidden,
+            'learning_rate': self.lr,
+            'n_iters': self.n_iters,
+            'normalize': self.normalize,
+            'proba': self.proba,
+            'threshold': self.threshold
+        }
+
+    def set_params(self, **params):
+        for key, value in params.items():
+            setattr(self, key, value)
+        return self

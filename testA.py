@@ -1,14 +1,17 @@
+from sys import argv
 import pandas as pd
 import numpy as np
+import json
 
 from args import *
 from Classifiers.classifier import Classifier
 from Clusters.KMeans import KMeansCluster
 
+from tools.Hyperparameter import hyperparameter_tuning
 from tools.DataHandler import data_preprocessA
 from tools.makepicture import * #畫圖
 
-KMeans = KMeansCluster(n_clusters = 5, max_iter = 300, tol = 1e-4)
+KMeans = KMeansCluster(n_clusters = 7, max_iter = 300, tol = 1e-4)
 
 def testA_main():
 
@@ -41,19 +44,31 @@ def testA_main():
     print("X_train shape:", x_train.shape, ", X_test shape:", x_test.shape)
     print("Data preprocessing completed.\n")
 
+    model_options = {}
+
+    if len(argv) >= 2:
+        if argv[1] == '-t':
+            model_options = hyperparameter_tuning(x_train, y_train, 1)  # 超參數調整
+        else:
+            print("Invalid argument. Use '-t' for hyperparameter tuning.")
+            return
+    else:
+        models_params = json.load(open('models_params.json', 'r'))
+        model_options = {model_name: empty_models[model_name].set_params(**params)
+                          for model_name, params in models_params.items()}
     
 
     for model_name in models:
 
-            model: Classifier = model_options[model_name]           # 建立模型
-            model.fit(x_train, y_train)                             # 訓練模型
-            model.score(x_test, y_test, output = True)              # 測試模型   
+            model: Classifier = model_options[model_name]                   # 建立模型
+            model.fit(x_train, y_train)                                     # 訓練模型
+            model.analysis(x_test, y_test, y_train, output = False)         # 測試模型   
 
-            y_classified = model.predict(x_test)                    # 預測結果
-            KMeans.score(x_test, y_classified, y_test, True)        # KMeans 分群 
+            y_classified = model.predict(x_test)                            # 預測結果
+            KMeans.score(x_test, y_classified, y_test, output = True)      # KMeans 分群 
         
-            # 預測訓練資料
-            y_train_pred = model.predict(x_train)
+            # # 預測訓練資料
+            # y_train_pred = model.predict(x_train)
 
             # # 畫訓練資料的前處理與分類結果
             # plot_feature_scatter_double(
