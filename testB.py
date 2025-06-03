@@ -20,8 +20,6 @@ def read_dataset(dataset_name):
 
     global x_train, y_train, x_test, y_test
 
-    print(f'\n ----------    {dataset_name}     --------------\n')
-
     # Read Train Data
     print("Loading Train Data...")
     train_data_path = f"./dataset/{dataset_name}/train_data.csv"
@@ -51,11 +49,6 @@ def testB_main():
     # Read dataset
     read_dataset(dataset)
 
-    # 資料預處理
-    data_preprocessB(x_train, x_test)
-    print("X_train shape:", x_train.shape, ", X_test shape:", x_test.shape)
-    print("Data preprocessing completed.\n")
-
     # Encode labels
     print("Encoding labels...")
     train_unique_labels = list(y_train['Class'].unique())
@@ -64,6 +57,11 @@ def testB_main():
     label_mapping = {label: idx + 1 for idx, label in enumerate(all_labels)}
     y_train['Class'] = y_train['Class'].map(label_mapping)
     y_test['Class'] = y_test['Class'].map(label_mapping)
+
+    # 資料預處理
+    data_preprocessB(x_train, y_train, x_test)
+    print("X_train shape:", x_train.shape, ", X_test shape:", x_test.shape)
+    print("Data preprocessing completed.\n")
 
     params_filepath = 'models_params_A.json'
     model_options = {}
@@ -84,19 +82,22 @@ def testB_main():
 
     for model_name in models:
 
-            model: Classifier = model_options[model_name]                                      # 建立模型
-            model.fit(x_train, y_train)                                                        # 訓練模型
-            model.score(x_test, y_test, output = True)                                         # 測試模型   
+            model: Classifier = model_options[model_name]                                       # 建立模型
+            model.fit(x_train, y_train)                                                         # 訓練模型
+            model.analysis(x_test, y_test, y_train, output = True)                              # 測試模型   
 
-            y_classified = model.predict(x_test)                                               # 預測結果
+            y_classified = model.predict(x_test)                                                # 預測結果
             best_score = 0.0
+            best_k = 0
             for k in range(2, 5):
                 KMeans = KMeansCluster(n_clusters = k, max_iter = 300, tol = 1e-4)
-                acc = KMeans.score(x_test, y_classified, y_train, y_test, output = False)      # KMeans 分群 
+                acc = KMeans.score(x_test, y_classified, y_train, y_test, output = False)       # KMeans 分群 
                 # print(f"{model_name} KMeans Score for k={k}: {acc * 100:.2f} %")
-                best_score = max(best_score, acc)
+                if acc > best_score:
+                    best_k = k
+                    best_score = acc
             
-            print(f"{model_name} KMeans Score: {best_score * 100:.2f} %\n")
+            print(f"{model_name} -> KMeans[{best_k}] Score: {best_score * 100:.2f} %\n")
 
             # plot_feature_scatter_double(
             #     x_test,

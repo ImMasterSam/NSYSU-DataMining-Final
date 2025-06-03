@@ -45,7 +45,7 @@ def correlation_filter(train_dataset: pd.DataFrame,
     # 建立相關矩陣
     corr_matrix = train_dataset.corr(method = method)
 
-        # 只看上三角（不含對角線）
+    # 只看上三角（不含對角線）
     upper = np.triu(np.ones(corr_matrix.shape), k=1).astype(bool)
     to_drop = [column for column in corr_matrix.columns[np.where((corr_matrix.values > threshold) & upper)[1]]]
                 

@@ -19,11 +19,10 @@ def hyperparameter_tuning(x_train: pd.DataFrame,
     for model_name in models:
 
         print(f"\n--- 調整 {model_name} 的超參數 ---")
-        print("調整中 ...")
 
         param_grid = all_param_grid[model_name]
         clf = empty_models[model_name]
-        grid = GridSearchCV(clf, param_grid, cv=cv, n_jobs = -1, scoring='accuracy')
+        grid = GridSearchCV(clf, param_grid, cv=cv, n_jobs = -1, scoring='accuracy', verbose=1)
         grid.fit(x_train, y_train.values.ravel())  # y_train 若是 DataFrame 請加 .values.ravel()
 
         

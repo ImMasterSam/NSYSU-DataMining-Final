@@ -49,7 +49,7 @@ def data_preprocessA(train_dataset: pd.DataFrame, train_label: pd.DataFrame, tes
     train_label.drop(train_label.index, inplace=True)
     train_label[train_label.columns[0]] = y_res
 
-def data_preprocessB(train_dataset: pd.DataFrame, test_dataset: pd.DataFrame) -> None:
+def data_preprocessB(train_dataset: pd.DataFrame, train_label: pd.DataFrame, test_dataset: pd.DataFrame = None) -> None:
     '''資料預處理函式，針對 gene expression cancer RNA-Seq Data Set 進行處理'''
 
     print("\nData preprocessing started...")
@@ -69,6 +69,18 @@ def data_preprocessB(train_dataset: pd.DataFrame, test_dataset: pd.DataFrame) ->
     if count_missing_values(test_dataset, False).size > 0:
         print("Imputing missing values in test data...")
         impute_missing_values(test_dataset, 'mean')
+
+    # 進行資料過採樣
+    print("Resampling with SMOTE & Tomek...")
+    X_res, y_res = SMOTETomek().fit_resample(train_dataset, train_label)
+
+    # 更新訓練資料集和標籤
+    print("Updating train dataset and label with resampled data...")
+    train_dataset.drop(train_dataset.index, inplace=True)
+    for col in train_dataset.columns:
+        train_dataset[col] = X_res[col]
+    train_label.drop(train_label.index, inplace=True)
+    train_label[train_label.columns[0]] = y_res
 
 if __name__ == "__main__":
 

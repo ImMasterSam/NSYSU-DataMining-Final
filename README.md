@@ -36,7 +36,7 @@
 因為在 Arrhythmia 資料集中，少數類別(有疾病)的樣本數非常少，因此需要進行資料過採樣。
 - 使用 **SMOTE** (Synthetic Minority Over-sampling Technique) 進行資料過採樣，增加少數類別的樣本數。
 
-![SMOTE](/observation/Label%20counts.png) 
+![Arrhythmia SMOTE](/observation/Label_counts_A.png) 
 
 #### 4. 分類器訓練
 - 使用 `KNN`、`Neural Network`、`Random Forest`、`SVM` 分類器進行訓練。
@@ -48,6 +48,9 @@
 ### Gene Expression Canver RNA-Seq 資料集
 #### 1. 資料前處理
 - 過濾常數特徵: 移除所有值都相同的特徵。
+- 使用 **SMOTE** (Synthetic Minority Over-sampling Technique) 進行資料過採樣，增加少數類別的樣本數。
+
+![Canver RNA-Seq SMOTE](/observation/Label_counts_B.png) 
 
 #### 2. 分類器訓練
 - 使用 `KNN`、`Neural Network`、`Random Forest`、`SVM` 分類器進行訓練。

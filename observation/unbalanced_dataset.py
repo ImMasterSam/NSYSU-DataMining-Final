@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-from tools.DataHandler import data_preprocessA
+from tools.DataHandler import data_preprocessA, data_preprocessB
 from imblearn.over_sampling import SMOTE
 
 if __name__ == "__main__":
@@ -53,8 +53,46 @@ if __name__ == "__main__":
             plt.tight_layout()
             plt.legend()
 
-            plt.savefig(f"./observation/Label counts.png", dpi = 600)
+            plt.savefig(f"./observation/Label_counts_A.png", dpi = 600)
             plt.show()
 
         else:
-            pass
+            # Read Train Data
+            print("Loading Train Data...")
+            train_data_path = f"./dataset/{dataset}/train_data.csv"
+            train_label_path = f"./dataset/{dataset}/train_label.csv"
+
+            x_train = pd.read_csv(train_data_path, header=0).set_index('id')
+            y_train = pd.read_csv(train_label_path, header=0).set_index('id')
+            print("X_train shape:", x_train.shape, ", Y_train shape:", y_train.shape)
+
+            # Read Test Data
+            print("Loading Test Data...")
+            test_data_path = f"./dataset/{dataset}/test_data.csv"
+            test_label_path = f"./dataset/{dataset}/test_label.csv"
+
+            x_test = pd.read_csv(test_data_path, header=0).set_index('id')
+            y_test = pd.read_csv(test_label_path, header=0).set_index('id')
+            print("X_test shape:", x_test.shape, ", Y_test shape:", y_test.shape)
+
+            fig, ax = plt.subplots(1,2)
+
+            # 繪製訓練資料的類別分佈
+            value_counts = y_train.iloc[:, 0].value_counts()
+            print(value_counts)
+            ax[0].pie(value_counts, labels = value_counts.index, autopct='%1.1f%%')
+            ax[0].set_title('Cancer RNA-Seq')  # 圖標題
+
+            # 資料預處理
+            data_preprocessB(x_train, y_train, x_test)
+
+            # 繪製處理後的訓練資料類別分佈)
+            value_counts = y_train.iloc[:, 0].value_counts()
+            print(value_counts)
+            ax[1].pie(value_counts, labels = value_counts.index, autopct='%1.1f%%')
+            ax[1].set_title('Cancer RNA-Seq (After Resample)')  # 圖標題
+            plt.tight_layout()
+            plt.legend()
+
+            plt.savefig(f"./observation/Label_counts_B.png", dpi = 600)
+            plt.show()

@@ -61,7 +61,7 @@ def testA_main():
 
     if len(argv) >= 2:
         if argv[1] == '-t':
-            model_options = hyperparameter_tuning(x_train, y_train, 2, params_filepath)  # 超參數調整
+            model_options = hyperparameter_tuning(x_train, y_train, 5, params_filepath)  # 超參數調整
         else:
             print("Invalid argument. Use '-t' for hyperparameter tuning.")
             return
@@ -82,13 +82,17 @@ def testA_main():
 
             y_classified = model.predict(x_test)                                    # 預測結果
             best_score = 0.0
+            best_k = 0
             for k in range(1, 10):
                 KMeans = KMeansCluster(n_clusters = k, max_iter = 300, tol = 1e-4)
                 acc = KMeans.score(x_test, y_classified, y_train, y_test, output = False)      # KMeans 分群 
                 # print(f"{model_name} KMeans Score for k={k}: {acc * 100:.2f} %")
                 best_score = max(best_score, acc)
+                if acc > best_score:
+                    best_k = k
+                    best_score = acc
             
-            print(f"{model_name} KMeans Score: {best_score * 100:.2f} %\n")
+            print(f"{model_name} -> KMeans[{best_k}] Score: {best_score * 100:.2f} %\n")
         
             # # 預測訓練資料
             # y_train_pred = model.predict(x_train)
