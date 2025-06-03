@@ -1,10 +1,13 @@
+from sys import argv
 import pandas as pd
 import numpy as np
+import json
 
 from args import *
 from Classifiers.classifier import Classifier
 from Clusters.KMeans import KMeansCluster
 
+from tools.Hyperparameter import hyperparameter_tuning
 from tools.DataHandler import data_preprocessB
 from tools.makepicture import * #畫圖
 
@@ -48,14 +51,38 @@ def testB_main():
     y_train['Class'] = y_train['Class'].map(label_mapping)
     y_test['Class'] = y_test['Class'].map(label_mapping)
 
+    params_filepath = 'models_params_A.json'
+    model_options = {}
+
+    if len(argv) >= 2:
+        if argv[1] == '-t':
+            model_options = hyperparameter_tuning(x_train, y_train, 2, params_filepath)  # 超參數調整
+        else:
+            print("Invalid argument. Use '-t' for hyperparameter tuning.")
+            return
+    else:
+        try:
+            models_params = json.load(open(params_filepath, 'r'))
+            model_options = {model_name: empty_models[model_name].set_params(**params)
+                            for model_name, params in models_params.items()}
+        except FileNotFoundError:
+            raise FileNotFoundError(f"File {params_filepath} not found. Please run with '-t' to generate it.")
+
     for model_name in models:
 
-            model: Classifier = model_options[model_name]           # 建立模型
-            model.fit(x_train, y_train)                             # 訓練模型
-            model.score(x_test, y_test, output = True)              # 測試模型   
+            model: Classifier = model_options[model_name]                                      # 建立模型
+            model.fit(x_train, y_train)                                                        # 訓練模型
+            model.score(x_test, y_test, output = True)                                         # 測試模型   
 
-            y_classified = model.predict(x_test)                    # 預測結果
-            KMeans.score(x_test, y_classified, y_test, True)        # KMeans 分群 
+            y_classified = model.predict(x_test)                                               # 預測結果
+            best_score = 0.0
+            for k in range(2, 5):
+                KMeans = KMeansCluster(n_clusters = k, max_iter = 300, tol = 1e-4)
+                acc = KMeans.score(x_test, y_classified, y_train, y_test, output = False)      # KMeans 分群 
+                # print(f"{model_name} KMeans Score for k={k}: {acc * 100:.2f} %")
+                best_score = max(best_score, acc)
+            
+            print(f"{model_name} KMeans Score: {best_score * 100:.2f} %\n")
 
             # plot_feature_scatter_double(
             #     x_test,

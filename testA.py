@@ -44,18 +44,22 @@ def testA_main():
     print("X_train shape:", x_train.shape, ", X_test shape:", x_test.shape)
     print("Data preprocessing completed.\n")
 
+    params_filepath = 'models_params_A.json'
     model_options = {}
 
     if len(argv) >= 2:
         if argv[1] == '-t':
-            model_options = hyperparameter_tuning(x_train, y_train, 1)  # 超參數調整
+            model_options = hyperparameter_tuning(x_train, y_train, 2, params_filepath)  # 超參數調整
         else:
             print("Invalid argument. Use '-t' for hyperparameter tuning.")
             return
     else:
-        models_params = json.load(open('models_params.json', 'r'))
-        model_options = {model_name: empty_models[model_name].set_params(**params)
-                          for model_name, params in models_params.items()}
+        try:
+            models_params = json.load(open(params_filepath, 'r'))
+            model_options = {model_name: empty_models[model_name].set_params(**params)
+                            for model_name, params in models_params.items()}
+        except FileNotFoundError:
+            raise FileNotFoundError(f"File {params_filepath} not found. Please run with '-t' to generate it.")
     
 
     for model_name in models:

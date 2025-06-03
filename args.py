@@ -9,20 +9,18 @@ models = ('K Nearest Neighbors', 'Neural Network', 'Random Forest', 'Kernel SVM 
 
 all_param_grid = {
     'K Nearest Neighbors': {
-        
         'normalize': [True, False],
-        'threshold': list(np.arange(0.5, 0.9, 0.1)),  # 機率閾值
+        'threshold': [0.8],  # 機率閾值
         'k': list(range(11, 30, 2)),  # 奇數
         'normDistance': list(range(1, 5)),
         'weights': ['uniform', 'distance']
-
     },
     'Neural Network': {
         'n_hidden': [10, 20, 50],
         'learning_rate': [0.001, 0.01, 0.1],
         'n_iters': [1000, 2000, 3000],
         'normalize': [True, False],
-        'threshold': list(np.arange(0.5, 0.9, 0.1))
+        'threshold': [0.8]
     },
     'Random Forest': {
         'n_estimators': [50, 100, 200],
@@ -30,32 +28,31 @@ all_param_grid = {
         'min_samples_split': [2, 5, 10],
         'normalize': [True, False],
         'class_weight': ['balanced', 'balanced_subsample'],
-        'threshold': list(np.arange(0.5, 0.9, 0.1))
+        'threshold': [0.8]
     },
     'Kernel SVM (linear)': {
         'kernel': ['linear'],
         'normalize': [True, False],
         'class_weight': ['balanced', None],
-        'threshold': list(np.arange(0.5, 0.9, 0.1))
+        'threshold': [0.8]
     },
     'Kernel SVM (poly)': {
         'kernel': ['poly'],
         'normalize': [True, False],
         'class_weight': ['balanced', None],
-        'threshold': list(np.arange(0.5, 0.9, 0.1))
+        'threshold': [0.8]
     },
     'Kernel SVM (rbf)': {
         'kernel': ['rbf'],
         'normalize': [True, False],
-        'proba': [True],
         'class_weight': ['balanced', None],
-        'threshold': list(np.arange(0.5, 0.9, 0.1))
+        'threshold': [0.8]
     },
     'Kernel SVM (sigmoid)': {
         'kernel': ['sigmoid'],
         'normalize': [True, False],
         'class_weight': ['balanced', None],
-        'threshold': list(np.arange(0.5, 0.9, 0.1))
+        'threshold': [0.8]
     }
 }
 
