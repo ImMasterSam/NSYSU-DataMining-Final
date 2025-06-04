@@ -107,7 +107,7 @@ def testB_main():
             best_k = 0
             for k in range(2, 5):
                 KMeans = KMeansCluster(n_clusters = k, max_iter = 300, tol = 1e-4)
-                acc = KMeans.score(x_test, y_classified, y_train, y_test, output = False)       # KMeans 分群 
+                acc = KMeans.score(x_test_preprocessed, y_classified, y_train_preprocessed, y_test, output = False)       # KMeans 分群 
 
                 if acc > best_score:
                     best_k = k

@@ -12,10 +12,10 @@ class KMeansCluster(Cluster):
         self.tol = tol
         self.centroids = None
 
-    def fit_predict(self, x_train, labels):
+    def fit_predict(self, x_dataset, labels):
         labels = np.array(labels).ravel()
         unknown_mask = (labels == -1)
-        x_unknown = x_train[unknown_mask]
+        x_unknown = x_dataset[unknown_mask]
         x_unknown = np.array(x_unknown)
 
         # 若沒有未知資料，直接回傳原標籤

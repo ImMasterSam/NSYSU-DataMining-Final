@@ -6,6 +6,7 @@ import json
 from args import *
 from Classifiers.classifier import Classifier
 from Clusters.KMeans import KMeansCluster
+from Clusters.DBScan import DBScanCluster
 
 from tools.Hyperparameter import hyperparameter_tuning
 from tools.DataHandler import data_preprocessA
@@ -96,17 +97,23 @@ def testA_main():
 
             # ===== Clustering =====
 
+            #  KMeans 分群
             best_score = 0.0
             best_k = 0
             for k in range(1, 10):
                 KMeans = KMeansCluster(n_clusters = k, max_iter = 300, tol = 1e-4)
-                acc = KMeans.score(x_test, y_classified, y_train, y_test, output = False)       # KMeans 分群 
+                acc = KMeans.score(x_test_preprocessed, y_classified, y_train_preprocessed, y_test, output = False)       # KMeans 分群 
 
                 if acc > best_score:
                     best_k = k
                     best_score = acc
             
-            print(f"{model_name} -> KMeans[{best_k}] Score: {best_score * 100:.2f} %\n")
+            print(f"{model_name} -> KMeans[{best_k}] Score: {best_score * 100:.2f} %")
+
+            # DBScan 分群
+            DBScan = DBScanCluster(eps=3, min_samples=2)
+            acc = DBScan.score(x_test_preprocessed, y_classified, y_train_preprocessed, y_test, output = False)
+            print(f"{model_name} -> DBScan Score: {acc * 100:.2f} %\n")
     
         # # 預測訓練資料
         # y_train_pred = model.predict(x_train)
