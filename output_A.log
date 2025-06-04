@@ -6,18 +6,6 @@ X_train shape: (293, 279) , Y_train shape: (293, 1)
 Loading Test Data...
 X_test shape: (158, 279) , Y_test shape: (158, 1)
 
-Data preprocessing started...
-Filtering out features with small sample sizes...
-Checking for constant features...
-Checking for highly correlated features...
-Imputing missing values in train data...
-Imputing missing values in test data...
-Resampling with SMOTE & Tomek...
-Updating train dataset and label with resampled data...
-X_train shape: (1162, 111) , X_test shape: (158, 111)
-Data preprocessing completed.
-
-
 --- 參數設定 ---
 K Nearest Neighbors: {'k': 11, 'normDistance': 1, 'normalize': True, 'threshold': 0.8, 'weights': 'uniform'}
 Neural Network: {'learning_rate': 0.01, 'n_hidden': 50, 'n_iters': 3000, 'normalize': True, 'threshold': 0.8}
@@ -28,24 +16,118 @@ Kernel SVM (rbf): {'C': 0.3, 'class_weight': None, 'kernel': 'rbf', 'normalize':
 Kernel SVM (sigmoid): {'C': 0.9000000000000001, 'class_weight': None, 'kernel': 'sigmoid', 'normalize': True, 'threshold': 0.8}
 ----------------
 
-KNN Classifier Accuracy = 38.61 %
-K Nearest Neighbors -> KMeans[1] Score: 25.32 %
 
-Neural Network Classifier Accuracy = 37.34 %
-Neural Network -> KMeans[2] Score: 32.28 %
+===== with k = 16 =====
+KNN Classifier Accuracy = 43.04 %
+K Nearest Neighbors -> KMeans[1] Score: 31.01 %
 
-Random Forest Classifier Accuracy = 53.80 %
-Random Forest -> KMeans[6] Score: 32.28 %
+Neural Network Classifier Accuracy = 34.81 %
+Neural Network -> KMeans[1] Score: 31.01 %
 
-Kernel SVM (linear) Classifier Accuracy = 48.10 %
-Kernel SVM (linear) -> KMeans[3] Score: 39.87 %
+Random Forest Classifier Accuracy = 55.06 %
+Random Forest -> KMeans[1] Score: 37.34 %
+
+Kernel SVM (linear) Classifier Accuracy = 43.67 %
+Kernel SVM (linear) -> KMeans[1] Score: 33.54 %
 
 Kernel SVM (poly) Classifier Accuracy = 40.51 %
-Kernel SVM (poly) -> KMeans[3] Score: 36.08 %
+Kernel SVM (poly) -> KMeans[1] Score: 32.91 %
 
-Kernel SVM (rbf) Classifier Accuracy = 34.18 %
-Kernel SVM (rbf) -> KMeans[5] Score: 32.91 %
+Kernel SVM (rbf) Classifier Accuracy = 45.57 %
+Kernel SVM (rbf) -> KMeans[1] Score: 31.65 %
 
 Kernel SVM (sigmoid) Classifier Accuracy = 41.14 %
-Kernel SVM (sigmoid) -> KMeans[1] Score: 32.91 %
+Kernel SVM (sigmoid) -> KMeans[1] Score: 28.48 %
+
+
+===== with k = 32 =====
+KNN Classifier Accuracy = 41.14 %
+K Nearest Neighbors -> KMeans[1] Score: 29.11 %
+
+Neural Network Classifier Accuracy = 34.18 %
+Neural Network -> KMeans[1] Score: 31.65 %
+
+Random Forest Classifier Accuracy = 53.80 %
+Random Forest -> KMeans[1] Score: 32.28 %
+
+Kernel SVM (linear) Classifier Accuracy = 39.87 %
+Kernel SVM (linear) -> KMeans[1] Score: 31.01 %
+
+Kernel SVM (poly) Classifier Accuracy = 38.61 %
+Kernel SVM (poly) -> KMeans[1] Score: 29.11 %
+
+Kernel SVM (rbf) Classifier Accuracy = 48.10 %
+Kernel SVM (rbf) -> KMeans[1] Score: 35.44 %
+
+Kernel SVM (sigmoid) Classifier Accuracy = 37.34 %
+Kernel SVM (sigmoid) -> KMeans[1] Score: 31.01 %
+
+
+===== with k = 64 =====
+KNN Classifier Accuracy = 43.04 %
+K Nearest Neighbors -> KMeans[1] Score: 29.11 %
+
+Neural Network Classifier Accuracy = 47.47 %
+Neural Network -> KMeans[1] Score: 37.34 %
+
+Random Forest Classifier Accuracy = 58.23 %
+Random Forest -> KMeans[1] Score: 34.18 %
+
+Kernel SVM (linear) Classifier Accuracy = 48.73 %
+Kernel SVM (linear) -> KMeans[1] Score: 41.14 %
+
+Kernel SVM (poly) Classifier Accuracy = 36.08 %
+Kernel SVM (poly) -> KMeans[1] Score: 31.01 %
+
+Kernel SVM (rbf) Classifier Accuracy = 47.47 %
+Kernel SVM (rbf) -> KMeans[1] Score: 34.81 %
+
+Kernel SVM (sigmoid) Classifier Accuracy = 39.87 %
+Kernel SVM (sigmoid) -> KMeans[1] Score: 29.75 %
+
+
+===== with k = 128 =====
+KNN Classifier Accuracy = 41.77 %
+K Nearest Neighbors -> KMeans[1] Score: 27.85 %
+
+Neural Network Classifier Accuracy = 37.34 %
+Neural Network -> KMeans[1] Score: 32.91 %
+
+Random Forest Classifier Accuracy = 56.33 %
+Random Forest -> KMeans[1] Score: 31.65 %
+
+Kernel SVM (linear) Classifier Accuracy = 48.73 %
+Kernel SVM (linear) -> KMeans[1] Score: 40.51 %
+
+Kernel SVM (poly) Classifier Accuracy = 41.14 %
+Kernel SVM (poly) -> KMeans[1] Score: 35.44 %
+
+Kernel SVM (rbf) Classifier Accuracy = 36.08 %
+Kernel SVM (rbf) -> KMeans[1] Score: 32.91 %
+
+Kernel SVM (sigmoid) Classifier Accuracy = 41.14 %
+Kernel SVM (sigmoid) -> KMeans[1] Score: 32.28 %
+
+
+===== with k = 256 =====
+KNN Classifier Accuracy = 38.61 %
+K Nearest Neighbors -> KMeans[1] Score: 26.58 %
+
+Neural Network Classifier Accuracy = 37.97 %
+Neural Network -> KMeans[1] Score: 32.28 %
+
+Random Forest Classifier Accuracy = 57.59 %
+Random Forest -> KMeans[1] Score: 33.54 %
+
+Kernel SVM (linear) Classifier Accuracy = 47.47 %
+Kernel SVM (linear) -> KMeans[1] Score: 39.24 %
+
+Kernel SVM (poly) Classifier Accuracy = 41.14 %
+Kernel SVM (poly) -> KMeans[1] Score: 35.44 %
+
+Kernel SVM (rbf) Classifier Accuracy = 37.34 %
+Kernel SVM (rbf) -> KMeans[1] Score: 33.54 %
+
+Kernel SVM (sigmoid) Classifier Accuracy = 38.61 %
+Kernel SVM (sigmoid) -> KMeans[1] Score: 31.01 %
 

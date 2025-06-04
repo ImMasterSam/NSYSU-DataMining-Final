@@ -38,6 +38,28 @@ def read_dataset(dataset_name):
     y_test = pd.read_csv(test_label_path, header=0).set_index('id')
     print("X_test shape:", x_test.shape, ", Y_test shape:", y_test.shape)
 
+def load_models_params(params_filepath):
+    """Load model parameters from a JSON file."""
+
+    global x_train, y_train, x_test, y_test
+
+    if len(sys.argv) >= 2 and ('-t' in sys.argv[1:]):
+        x_train_preprocessed, y_train_preprocessed, x_test_preprocessed = data_preprocessB(x_train, y_train, x_test)
+        model_options = hyperparameter_tuning(x_train_preprocessed, y_train_preprocessed, 5, params_filepath)
+    else:
+        try:
+            models_params = json.load(open(params_filepath, 'r'))
+            model_options = {model_name: empty_models[model_name].set_params(**params)
+                            for model_name, params in models_params.items()}
+            print(f"\n--- 參數設定 ---")
+            for model_name, params in models_params.items():
+                print(f"{model_name}: {params}")
+            print(f"----------------\n")
+        except FileNotFoundError:
+            raise FileNotFoundError(f"File {params_filepath} not found. Please run with '-t' to generate it.")
+        
+    return model_options
+
 def testB_main():
 
     global x_train, y_train, x_test, y_test
@@ -58,37 +80,35 @@ def testB_main():
     y_train['Class'] = y_train['Class'].map(label_mapping)
     y_test['Class'] = y_test['Class'].map(label_mapping)
 
-    # 資料預處理
-    data_preprocessB(x_train, y_train, x_test)
-    print("X_train shape:", x_train.shape, ", X_test shape:", x_test.shape)
-    print("Data preprocessing completed.\n")
-
+    # 模型參數設定
     params_filepath = 'models_params_A.json'
-    model_options = {}
+    model_options = load_models_params(params_filepath)
 
-    if len(sys.argv) >= 2 and ('-t' in sys.argv[1:]):
-        model_options = hyperparameter_tuning(x_train, y_train, 5, params_filepath)
-    else:
-        try:
-            models_params = json.load(open(params_filepath, 'r'))
-            model_options = {model_name: empty_models[model_name].set_params(**params)
-                            for model_name, params in models_params.items()}
-        except FileNotFoundError:
-            raise FileNotFoundError(f"File {params_filepath} not found. Please run with '-t' to generate it.")
+    for k in feature_selection_k:
+        
+        print(f"\n===== with k = {k} =====")
 
-    for model_name in models:
+        # 資料預處理
+        x_train_preprocessed, y_train_preprocessed, x_test_preprocessed = data_preprocessB(x_train, y_train, x_test, feature_selection = k)  # 資料預處理
+            
+        for model_name in models:
+            
+            # ===== Classification =====
 
-            model: Classifier = model_options[model_name]                                       # 建立模型
-            model.fit(x_train, y_train)                                                         # 訓練模型
-            model.analysis(x_test, y_test, y_train, output = True)                              # 測試模型   
+            model: Classifier = model_options[model_name]                                                   # 建立模型
+            model.fit(x_train_preprocessed, y_train_preprocessed)                                           # 訓練模型
+            report = model.analysis(x_test_preprocessed, y_test, y_train_preprocessed, output = False)      # 測試模型   
 
-            y_classified = model.predict(x_test)                                                # 預測結果
+            y_classified = model.predict(x_test_preprocessed)                                               # 預測結果
+
+            # ===== Clustering =====
+
             best_score = 0.0
             best_k = 0
             for k in range(2, 5):
                 KMeans = KMeansCluster(n_clusters = k, max_iter = 300, tol = 1e-4)
                 acc = KMeans.score(x_test, y_classified, y_train, y_test, output = False)       # KMeans 分群 
-                # print(f"{model_name} KMeans Score for k={k}: {acc * 100:.2f} %")
+
                 if acc > best_score:
                     best_k = k
                     best_score = acc

@@ -38,27 +38,14 @@ def read_dataset(dataset_name):
     y_test = pd.read_csv(test_label_path, header=None)
     print("X_test shape:", x_test.shape, ", Y_test shape:", y_test.shape)
 
-def testA_main():
+def load_models_params(params_filepath):
+    """Load model parameters from a JSON file."""
 
     global x_train, y_train, x_test, y_test
 
-    dataset = 'Arrhythmia Data Set'  # Default dataset
-
-    print(f'\n ----------    {dataset}     --------------\n')
-
-    # Read dataset
-    read_dataset(dataset)
-    
-    # 資料預處理
-    data_preprocessA(x_train, y_train, x_test)
-    print("X_train shape:", x_train.shape, ", X_test shape:", x_test.shape)
-    print("Data preprocessing completed.\n")
-
-    params_filepath = 'models_params_A.json'
-    model_options = {}
-
     if len(sys.argv) >= 2 and ('-t' in sys.argv[1:]):
-        model_options = hyperparameter_tuning(x_train, y_train, 5, params_filepath)
+        x_train_preprocessed, y_train_preprocessed, x_test_preprocessed = data_preprocessA(x_train, y_train, x_test)
+        model_options = hyperparameter_tuning(x_train_preprocessed, y_train_preprocessed, 5, params_filepath)
     else:
         try:
             models_params = json.load(open(params_filepath, 'r'))
@@ -70,27 +57,56 @@ def testA_main():
             print(f"----------------\n")
         except FileNotFoundError:
             raise FileNotFoundError(f"File {params_filepath} not found. Please run with '-t' to generate it.")
+        
+    return model_options
+
+def testA_main():
+
+    global x_train, y_train, x_test, y_test
+
+    dataset = 'Arrhythmia Data Set'  # Default dataset
+
+    print(f'\n ----------    {dataset}     --------------\n')
+
+    # 載入原始資料
+    read_dataset(dataset)
+
+    # 模型參數設定
+    params_filepath = 'models_params_A.json'
+    model_options = load_models_params(params_filepath)
+
     
 
-    for model_name in models:
-
-        model: Classifier = model_options[model_name]                                       # 建立模型
-        model.fit(x_train, y_train)                                                         # 訓練模型
-        model.analysis(x_test, y_test, y_train, output = False)                             # 測試模型   
-
-        y_classified = model.predict(x_test)                                                # 預測結果
-        best_score = 0.0
-        best_k = 0
-        for k in range(1, 10):
-            KMeans = KMeansCluster(n_clusters = k, max_iter = 300, tol = 1e-4)
-            acc = KMeans.score(x_test, y_classified, y_train, y_test, output = False)       # KMeans 分群 
-            # print(f"{model_name} KMeans Score for k={k}: {acc * 100:.2f} %")
-
-            if acc > best_score:
-                best_k = k
-                best_score = acc
+    for k in feature_selection_k:
         
-        print(f"{model_name} -> KMeans[{best_k}] Score: {best_score * 100:.2f} %\n")
+        print(f"\n===== with k = {k} =====")
+
+        # 資料預處理
+        x_train_preprocessed, y_train_preprocessed, x_test_preprocessed = data_preprocessA(x_train, y_train, x_test, feature_selection = k)  # 資料預處理
+            
+        for model_name in models:
+            
+            # ===== Classification =====
+
+            model: Classifier = model_options[model_name]                                                   # 建立模型
+            model.fit(x_train_preprocessed, y_train_preprocessed)                                           # 訓練模型
+            report = model.analysis(x_test_preprocessed, y_test, y_train_preprocessed, output = False)      # 測試模型   
+
+            y_classified = model.predict(x_test_preprocessed)                                               # 預測結果
+
+            # ===== Clustering =====
+
+            best_score = 0.0
+            best_k = 0
+            for k in range(1, 10):
+                KMeans = KMeansCluster(n_clusters = k, max_iter = 300, tol = 1e-4)
+                acc = KMeans.score(x_test, y_classified, y_train, y_test, output = False)       # KMeans 分群 
+
+                if acc > best_score:
+                    best_k = k
+                    best_score = acc
+            
+            print(f"{model_name} -> KMeans[{best_k}] Score: {best_score * 100:.2f} %\n")
     
         # # 預測訓練資料
         # y_train_pred = model.predict(x_train)

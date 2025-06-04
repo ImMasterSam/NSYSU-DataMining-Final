@@ -6,6 +6,7 @@ from Classifiers.Neural import NeuralNetClassifier
 from Classifiers.SVM import SVMClassifier
 
 models = ('K Nearest Neighbors', 'Neural Network', 'Random Forest', 'Kernel SVM (linear)', 'Kernel SVM (poly)', 'Kernel SVM (rbf)', 'Kernel SVM (sigmoid)')
+feature_selection_k = (16, 32, 64, 128, 256)  # 特徵選擇的 k 值
 
 all_param_grid = {
     'K Nearest Neighbors': {

@@ -26,27 +26,27 @@ def count_missing_values(dataset_path: pd.DataFrame, output: bool = False) -> pd
     return missing_counts
 
 def impute_missing_values(dataset: pd.DataFrame,
-                          method: Literal['mean', 'medium', 'mode', 'KNN'] = 'mean') -> bool:
-    
+                          method: Literal['mean', 'medium', 'mode', 'KNN'] = 'mean') -> pd.DataFrame:
+    """
+    回傳填補缺失值後的新 DataFrame。
+    """
     match method:
         case 'mean':
             # Impute missing values with the mean of each column
-            dataset.fillna(dataset.mean(), inplace=True)
+            return dataset.fillna(dataset.mean())
         case 'medium':
             # Impute missing values with the median of each column
-            dataset.fillna(dataset.median(), inplace=True)
+            return dataset.fillna(dataset.median())
         case 'mode':
             # Impute missing values with the mode of each column
-            dataset.fillna(dataset.mode().iloc[0], inplace=True)
+            return dataset.fillna(dataset.mode().iloc[0])
         case 'KNN':
             # Impute missing values using KNN imputation
             from sklearn.impute import KNNImputer
             imputer = KNNImputer(n_neighbors=5)
-            dataset = pd.DataFrame(imputer.fit_transform(dataset), columns=dataset.columns)
+            return pd.DataFrame(imputer.fit_transform(dataset), columns=dataset.columns)
         case _:
             raise ValueError("Invalid method. Choose from 'mean', 'medium', 'mode', or 'KNN'.")
-        
-    return True
         
 if __name__ == "__main__":
 

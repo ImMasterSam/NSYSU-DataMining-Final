@@ -48,66 +48,52 @@
 ### Arrhythmia 資料集 - 結果
 
 #### 純分類結果
-| 分類器 | 準確度 Accuracy |
-|--------|-----------------|
-| KNN    | 38.61 %         | 
-| Neural Network | 37.34 %         |
-| Random Forest | **53.80 %**         |
-| SVM (Linear) | 48.10 %         | 
-| SVM (Polynomial) | 40.51 %         |
-| SVM (RBF) | 34.18 %         |
-| SVM (Sigmoid) | 41.14 %         |
+| 分類器 | k | 準確度 Accuracy |
+|--------|---|-----------------|
+| KNN    | 16  | 43.04 %         | 
+| Neural Network | 64  | 47.47 %         |
+| Random Forest | 64  | **58.23 %**         |
+| SVM (Linear) | 128  | 48.73 %         | 
+| SVM (Polynomial) | 128  | 41.14 %         |
+| SVM (RBF) | 32  | 48.10 %         |
+| SVM (Sigmoid) | 16  | 41.14 %         |
 
 #### 分群後結果
-| 分類器 | 分群器 | 群集數量 | 準確度 Accuracy |
-|--------|--------|--------|-----|
-| KNN    | K-Means | 1   | 25.32 % |
-| Neural Network | K-Means | 2   | 32.28 % |
-| Random Forest | K-Means | 6   | 32.28 % |
-| SVM (Linear) | K-Means | 3   | **39.87 %** |
-| SVM (Polynomial) | K-Means | 3   | 36.08 % |
-| SVM (RBF) | K-Means | 5   | 32.91 % |
-| SVM (Sigmoid) | K-Means | 1   | 32.91 % |
+| 分類器 | 分群器 | 群集數量 | k | 準確度 Accuracy |
+|--------|--------|--------|---|-----------------|
+| KNN    | K-Means | 1   | 16  | 41.14 % |
+| Neural Network | K-Means | 2   | 64  | 37.34 % |
+| Random Forest | K-Means | 1   | 16  | 41.14 % |
+| SVM (Linear) | K-Means | 3   | 128  | **41.14 %** |
+| SVM (Polynomial) | K-Means | 3   | 128  | 41.14 % |
+| SVM (RBF) | K-Means | 5   | 128  | 41.14 % |
+| SVM (Sigmoid) | K-Means | 1   | 16  | 41.14 % |
 
 --- 
-
-### Gene Expression Canver RNA-Seq 資料集
-#### 1. 資料前處理
-- 過濾常數特徵: 移除所有值都相同的特徵。
-- 使用 **SMOTE** (Synthetic Minority Over-sampling Technique) 進行資料過採樣，增加少數類別的樣本數。
-
-![Canver RNA-Seq SMOTE](/observation/Label_counts_B.png) 
-
-#### 2. 分類器訓練
-- 使用 `KNN`、`Neural Network`、`Random Forest`、`SVM` 分類器進行訓練。
-- 將機率小於 `0.8` 的樣本點視為未知，否則將將資料標示類別。
-
-#### 3. 分群器訓練
-- 使用 `K-Means` 分群器對分類器預測結果進行分群。
 
 ### Gene Expression Canver RNA-Seq 資料集 - 結果
 
 ### 純分類結果
-| 分類器 | 準確度 Accuracy |
-|--------|-----------------|
-| KNN    | 53 %         | 
-| Neural Network | 47 %         |
-| Random Forest | **94 %**         |
-| SVM (Linear) | 55 %         | 
-| SVM (Polynomial) | 65 %         |
-| SVM (RBF) | 72 %         |
-| SVM (Sigmoid) | 57 %         |
+| 分類器 | k | 準確度 Accuracy |
+|--------|---|-----------------|
+| KNN    | 16  | 67.17 %         | 
+| Neural Network | 32  | 62.35 %         |
+| Random Forest | 32  | **98.80 %**         |
+| SVM (Linear) | 32  | 72.29 %         | 
+| SVM (Polynomial) | 64  | 84.94 %         |
+| SVM (RBF) | 16  | 78.31 %         |
+| SVM (Sigmoid) | 32  | 68.37 %         |
 
 ### 分群後結果
-| 分類器 | 分群器 | 群集數量 | 準確度 Accuracy |
-|--------|--------|--------|-----|
-| KNN    | K-Means | 2   | 52.41 % |
-| Neural Network | K-Means | 2   | 46.99 % |
-| Random Forest | K-Means | 2   | **93.98 %** |
-| SVM (Linear) | K-Means | 2   | 54.82 % |
-| SVM (Polynomial) | K-Means | 2   | 65.06 % |
-| SVM (RBF) | K-Means | 2   | 71.99 % |
-| SVM (Sigmoid) | K-Means | 2   | 56.02 % |
+| 分類器 | 分群器 | 群集數量 | k | 準確度 Accuracy |
+|--------|--------|--------|---|-----------------|
+| KNN    | K-Means | 2   | 16  | 67.17 % |
+| Neural Network | K-Means | 2   | 32  | 62.35 % |
+| Random Forest | K-Means | 2   | 32  | **98.80 %** |
+| SVM (Linear) | K-Means | 3   | 32  | 56.02 % |
+| SVM (Polynomial) | K-Means | 2   | 64  | 84.94 % |
+| SVM (RBF) | K-Means | 2   | 16  | 78.31 % |
+| SVM (Sigmoid) | K-Means | 2   | 32  | 68.37 % |
 
 
 ## 使用說明
