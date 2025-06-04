@@ -71,9 +71,25 @@
 
 --- 
 
+--- 
+
+### Gene Expression Canver RNA-Seq 資料集
+#### 1. 資料前處理
+- 過濾常數特徵: 移除所有值都相同的特徵。
+- 使用 **SMOTE** (Synthetic Minority Over-sampling Technique) 進行資料過採樣，增加少數類別的樣本數。
+
+![Canver RNA-Seq SMOTE](/observation/Label_counts_B.png) 
+
+#### 2. 分類器訓練
+- 使用 `KNN`、`Neural Network`、`Random Forest`、`SVM` 分類器進行訓練。
+- 將機率小於 `0.8` 的樣本點視為未知，否則將將資料標示類別。
+
+#### 3. 分群器訓練
+- 使用 `K-Means` 分群器對分類器預測結果進行分群。
+
 ### Gene Expression Canver RNA-Seq 資料集 - 結果
 
-### 純分類結果
+#### 純分類結果
 | 分類器 | k | 準確度 Accuracy |
 |--------|---|-----------------|
 | KNN    | 16  | 67.17 %         | 
@@ -84,7 +100,7 @@
 | SVM (RBF) | 16  | 78.31 %         |
 | SVM (Sigmoid) | 32  | 68.37 %         |
 
-### 分群後結果
+#### 分群後結果
 | 分類器 | 分群器 | 群集數量 | k | 準確度 Accuracy |
 |--------|--------|--------|---|-----------------|
 | KNN    | K-Means | 2   | 16  | 67.17 % |
