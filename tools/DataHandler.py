@@ -5,6 +5,9 @@ from imblearn.combine import SMOTETomek, SMOTEENN
 from imblearn.over_sampling import SMOTE
 from imblearn.under_sampling import NearMiss
 
+from sklearn.feature_selection import mutual_info_classif
+from sklearn.feature_selection import SelectKBest
+
 from tools.Imputation import count_missing_values, impute_missing_values
 from tools.Filters import small_sample_filter, constant_filter, correlation_filter
 
@@ -17,9 +20,9 @@ def data_preprocessA(train_dataset: pd.DataFrame, train_label: pd.DataFrame, tes
     print("Filtering out features with small sample sizes...")
     small_sample_filter(train_dataset, train_label, 5)
 
-    # 檢查資料集是否有常數特徵
-    print("Checking for constant features...")
-    constant_filter(train_dataset, test_dataset, 0.7)
+    # # 檢查資料集是否有常數特徵
+    # print("Checking for constant features...")
+    # constant_filter(train_dataset, test_dataset, 0.7)
 
     # 檢查資料集是否有高度相關的特徵
     print("Checking for highly correlated features...")
@@ -49,6 +52,17 @@ def data_preprocessA(train_dataset: pd.DataFrame, train_label: pd.DataFrame, tes
     train_label.drop(train_label.index, inplace=True)
     train_label[train_label.columns[0]] = y_res
 
+    # 選擇要保留的特徵數
+    select_k = 30
+    selection = SelectKBest(mutual_info_classif, k=select_k).fit(train_dataset, train_label.values.ravel())
+
+    # 顯示保留的欄位
+    features = train_dataset.columns[selection.get_support()]
+    print(f"Selected top {select_k} features : {features.tolist()}")
+
+    train_dataset.drop(columns=[col for col in train_dataset.columns if col not in features], inplace=True)
+    test_dataset.drop(columns=[col for col in test_dataset.columns if col not in features], inplace=True)
+
 def data_preprocessB(train_dataset: pd.DataFrame, train_label: pd.DataFrame, test_dataset: pd.DataFrame = None) -> None:
     '''資料預處理函式，針對 gene expression cancer RNA-Seq Data Set 進行處理'''
 
@@ -57,10 +71,6 @@ def data_preprocessB(train_dataset: pd.DataFrame, train_label: pd.DataFrame, tes
     # 檢查資料集是否有常數特徵
     print("Checking for constant features...")
     constant_filter(train_dataset, test_dataset, 0.7)
-
-    # 檢查資料集是否有高度相關的特徵
-    # print("Checking for highly correlated features...")
-    # correlation_filter(train_dataset, test_dataset, 0.8, 'pearson')
 
     # 檢查資料集是否有缺失值
     if count_missing_values(train_dataset, False).size > 0:
@@ -81,6 +91,17 @@ def data_preprocessB(train_dataset: pd.DataFrame, train_label: pd.DataFrame, tes
         train_dataset[col] = X_res[col]
     train_label.drop(train_label.index, inplace=True)
     train_label[train_label.columns[0]] = y_res
+
+    # 選擇要保留的特徵數
+    select_k = 30
+    selection = SelectKBest(mutual_info_classif, k=select_k).fit(train_dataset, train_label.values.ravel())
+
+    # 顯示保留的欄位
+    features = train_dataset.columns[selection.get_support()]
+    print(f"Selected top {select_k} features : {features.tolist()}")
+
+    train_dataset.drop(columns=[col for col in train_dataset.columns if col not in features], inplace=True)
+    test_dataset.drop(columns=[col for col in test_dataset.columns if col not in features], inplace=True)
 
 if __name__ == "__main__":
 
