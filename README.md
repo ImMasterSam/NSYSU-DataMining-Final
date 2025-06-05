@@ -26,7 +26,7 @@
 ### Arrhythmia 資料集
 #### 1. 資料前處理: 過濾特徵
 - 移除資料過少的特徵: 移除樣本數小於 5 的特徵。
-- 過濾常數特徵: 移除所有值都相同的特徵。
+- 過濾常數特徵: 移除常數性質過高的特徵。
 - 過濾高度相關特徵: 移除相關係數大於 0.8 的特徵。
 
 #### 2. 資料前處理: 補足缺失值
@@ -38,11 +38,15 @@
 
 ![Arrhythmia SMOTE](/observation/Label_counts_A.png) 
 
-#### 4. 分類器訓練
+#### 4. 資料前處理: 特徵篩選
+- 使用 **Mutual Information測量** 進行特徵篩選，選擇最重要的特徵。
+- 選擇前 (16, 32, 64, 128, 256) 個特徵進行分類。
+
+#### 5. 分類器訓練
 - 使用 `KNN`、`Neural Network`、`Random Forest`、`SVM` 分類器進行訓練。
 - 將機率小於 `0.8` 的樣本點視為未知，否則將將資料標示類別。
 
-#### 5. 分群器訓練
+#### 6. 分群器訓練
 - 使用 `K-Means` 分群器對分類器預測結果進行分群。
 
 ### Arrhythmia 資料集 - 結果
@@ -77,6 +81,7 @@
 #### 1. 資料前處理
 - 過濾常數特徵: 移除所有值都相同的特徵。
 - 使用 **SMOTE** (Synthetic Minority Over-sampling Technique) 進行資料過採樣，增加少數類別的樣本數。
+- 使用 **Mutual Information測量** 進行特徵篩選，選擇最重要的特徵。
 
 ![Canver RNA-Seq SMOTE](/observation/Label_counts_B.png) 
 
