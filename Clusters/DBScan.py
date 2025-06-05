@@ -62,3 +62,9 @@ class DBScanCluster(Cluster):
         result = labels.copy()
         result[unknown_mask] = cluster_labels + 100  # 分群結果從100開始
         return result
+    
+    def get_clusters_count(self):
+        ''' 返回分群數量 '''
+        if self.labels_ is None:
+            raise ValueError("Model has not been fitted yet.")
+        return len(set(self.labels_)) - (1 if -1 in self.labels_ else 0)

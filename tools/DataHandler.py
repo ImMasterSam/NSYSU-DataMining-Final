@@ -15,8 +15,8 @@ def data_preprocessA(train_dataset: pd.DataFrame,
                      train_label: pd.DataFrame,
                      test_dataset: pd.DataFrame,
                      output: bool = False,
-                     constant_threshold: float | None = 0.7,
-                     correlation_threshold: float | None = 0.8,
+                     constant_threshold: float = 0.7,
+                     correlation_threshold: float = 0.8,
                      resampling: bool = True,
                      feature_selection: int | None = None
                     ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
@@ -31,13 +31,13 @@ def data_preprocessA(train_dataset: pd.DataFrame,
     train_dataset, train_label = small_sample_filter(train_dataset, train_label, 5)
 
     # 檢查資料集是否有常數特徵
-    if constant_threshold is not None:
+    if constant_threshold < 1.0:
         if output:
             print("Checking for constant features...")
         train_dataset, test_dataset = constant_filter(train_dataset, test_dataset, constant_threshold)
 
     # 檢查資料集是否有高度相關的特徵
-    if correlation_threshold is not None:
+    if correlation_threshold < 1.0:
         if output:
             print("Checking for highly correlated features...")
         train_dataset, test_dataset = correlation_filter(train_dataset, test_dataset, correlation_threshold, 'pearson')
@@ -81,8 +81,8 @@ def data_preprocessB(train_dataset: pd.DataFrame,
                      train_label: pd.DataFrame,
                      test_dataset: pd.DataFrame = None,
                      output: bool = False,
-                     constant_threshold: float | None = 0.7,
-                     correlation_threshold: float | None = None,
+                     constant_threshold: float = 0.7,
+                     correlation_threshold: float = 1.0,
                      resampling: bool = True,
                      feature_selection: int | None = 256
                     ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
@@ -92,13 +92,13 @@ def data_preprocessB(train_dataset: pd.DataFrame,
         print("\nData preprocessing started...")
 
     # 檢查資料集是否有常數特徵
-    if constant_threshold is not None:
+    if constant_threshold < 1.0:
         if output:
             print("Checking for constant features...")
         train_dataset, test_dataset = constant_filter(train_dataset, test_dataset, constant_threshold)
 
     # 檢查資料集是否有高度相關的特徵
-    if correlation_threshold is not None:
+    if correlation_threshold < 1.0:
         if output:
             print("Checking for highly correlated features...")
         train_dataset, test_dataset = correlation_filter(train_dataset, test_dataset, correlation_threshold, 'pearson')

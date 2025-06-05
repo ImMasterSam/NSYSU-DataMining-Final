@@ -1,7 +1,9 @@
 import sys
 import pandas as pd
 import numpy as np
+from itertools import product
 import json
+from tqdm import tqdm
 
 from args import *
 from Classifiers.classifier import Classifier
@@ -81,50 +83,65 @@ def testB_main():
     y_test['Class'] = y_test['Class'].map(label_mapping)
 
     # 模型參數設定
-    params_filepath = 'models_params_A.json'
+    params_filepath = 'models_params_B.json'
     model_options = load_models_params(params_filepath)
 
-    for k in feature_selection_k:
-        
-        print(f"\n===== with k = {k} =====")
+    result_df = pd.DataFrame({
+        'Classification': pd.Series(dtype='str'),
+        'Clustering': pd.Series(dtype='str'),
+        'Classifier_Accuracy': pd.Series(dtype='float'),
+        'Clustering_Accuracy': pd.Series(dtype='float'),
+        'constant_threshold': pd.Series(dtype='float'),
+        'resampling': pd.Series(dtype='str'),
+        'feature_selection_k': pd.Series(dtype='int')
+    })
 
+    param_iter = product(constant_threshold_params, resampling_methods, feature_selection_k)
+    total_iter = len(constant_threshold_params)*len(resampling_methods) * len(feature_selection_k)
+    for constant_threshold, resampling, selection_k in tqdm(param_iter, total=total_iter, desc="Grid Search Progress"):
+        # print(f"\n===== resampling = {resampling}, feature_selection_k = {selection_k} =====")
         # 資料預處理
-        x_train_preprocessed, y_train_preprocessed, x_test_preprocessed = data_preprocessB(x_train, y_train, x_test, feature_selection = k)  # 資料預處理
-            
+        x_train_preprocessed, y_train_preprocessed, x_test_preprocessed = data_preprocessB(
+            x_train, y_train, x_test, constant_threshold = constant_threshold, resampling=resampling, feature_selection=selection_k)
         for model_name in models:
-            
-            # ===== Classification =====
-
-            model: Classifier = model_options[model_name]                                                   # 建立模型
-            model.fit(x_train_preprocessed, y_train_preprocessed)                                           # 訓練模型
-            report = model.analysis(x_test_preprocessed, y_test, y_train_preprocessed, output = False)      # 測試模型   
-
-            y_classified = model.predict(x_test_preprocessed)                                               # 預測結果
-
-            # ===== Clustering =====
-
-            best_score = 0.0
-            best_k = 0
-            for k in range(2, 5):
-                KMeans = KMeansCluster(n_clusters = k, max_iter = 300, tol = 1e-4)
-                acc = KMeans.score(x_test_preprocessed, y_classified, y_train_preprocessed, y_test, output = False)       # KMeans 分群 
-
-                if acc > best_score:
-                    best_k = k
-                    best_score = acc
-            
-            print(f"{model_name} -> KMeans[{best_k}] Score: {best_score * 100:.2f} %\n")
-
-            # plot_feature_scatter_double(
-            #     x_test,
-            #     y_classified,
-            #     title_suffix="_Test_Compare",
-            #     subfolder=f"trainB/{model_name}"
-            # )
+            classifier_accs = []
+            kmeans_accs = []
+            for _ in range(repeat_times):
+                # ===== Classification =====
+                model: Classifier = model_options[model_name]
+                model.fit(x_train_preprocessed, y_train_preprocessed)
+                report = model.analysis(x_test_preprocessed, y_test, y_train_preprocessed, output=0)
+                y_classified = model.predict(x_test_preprocessed)
+                # ===== Clustering =====
+                best_score = 0.0
+                best_k = 0
+                for k in range(2, 5):
+                    KMeans = KMeansCluster(n_clusters=k, max_iter=300, tol=1e-4)
+                    acc = KMeans.score(x_test_preprocessed, y_classified, y_train_preprocessed, y_test, output=False)
+                    if acc > best_score:
+                        best_k = k
+                        best_score = acc
+                # 新增分數
+                classifier_accs.append(report['accuracy'])
+                kmeans_accs.append(best_score)
+            # 計算平均分數
+            classifier_acc = np.mean(classifier_accs)
+            kmeans_acc = np.mean(kmeans_accs)
+            # 儲存結果到 DataFrame
+            result_df.loc[len(result_df)] = {
+                'Classification': model_name,
+                'Clustering': 'KMeans',
+                'Classifier_Accuracy': classifier_acc,
+                'Clustering_Accuracy': kmeans_acc,
+                'resampling': resampling,
+                'feature_selection_k': selection_k
+            }
+    # 儲存結果到 CSV 檔案
+    result_df.to_csv('testB_results.csv', index=False)
 
 if __name__ == "__main__":
 
     if len(sys.argv) >= 2 and ('-l' in sys.argv[1:]):
         sys.stdout = open('output_B.log', 'w+', encoding='utf-8')
 
-    testB_main()      
+    testB_main()

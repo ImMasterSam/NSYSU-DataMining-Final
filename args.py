@@ -6,6 +6,12 @@ from Classifiers.Neural import NeuralNetClassifier
 from Classifiers.SVM import SVMClassifier
 
 models = ('K Nearest Neighbors', 'Neural Network', 'Random Forest', 'Kernel SVM (linear)', 'Kernel SVM (poly)', 'Kernel SVM (rbf)', 'Kernel SVM (sigmoid)')
+
+# Feature selection parameters
+repeat_times = 3  # 重複次數
+constant_threshold_params = (0.7, 0.8, 0.9, 1.0)  # 常數特徵的閾值
+correlation_threshold_params = (0.7, 0.8, 0.9, 1.0)  # 高度相關特徵的閾值
+resampling_methods = (True,False)  # 重採樣方法
 feature_selection_k = (16, 32, 64, 128, 256)  # 特徵選擇的 k 值
 
 all_param_grid = {

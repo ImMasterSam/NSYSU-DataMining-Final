@@ -32,7 +32,7 @@ class Classifier:
             # print(y_predict)
         return accuracy
 
-    def analysis(self, x_test: pd.DataFrame, y_test: pd.DataFrame, y_train: pd.DataFrame, output: bool = False) -> dict:
+    def analysis(self, x_test: pd.DataFrame, y_test: pd.DataFrame, y_train: pd.DataFrame, output: int = 0) -> dict:
         ''' 輸出各項測量值 '''
         
         known_classes = {*map(int, y_train.iloc[:, 0].unique())}
@@ -43,10 +43,10 @@ class Classifier:
         report_str = classification_report(y_labels, y_predict, output_dict=False, zero_division=0)
         report_dict = classification_report(y_labels, y_predict, output_dict=True, zero_division=0)
 
-        if output:
+        if output >= 2:
             print(f"\t--- {self.name} Analysis ---")
             print(report_str)
-        else:
+        elif output == 1:
             print(f"{self.name} Accuracy = {report_dict['accuracy'] * 100:.2f} %")
 
         return report_dict

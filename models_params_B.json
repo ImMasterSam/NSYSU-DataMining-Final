@@ -7,45 +7,45 @@
         "weights": "uniform"
     },
     "Neural Network": {
-        "learning_rate": 0.01,
+        "learning_rate": 0.001,
         "n_hidden": 50,
-        "n_iters": 3000,
-        "normalize": true,
+        "n_iters": 1000,
+        "normalize": false,
         "threshold": 0.8
     },
     "Random Forest": {
         "class_weight": "balanced_subsample",
-        "max_depth": null,
+        "max_depth": 30,
         "min_samples_split": 2,
         "n_estimators": 50,
         "normalize": false,
         "threshold": 0.8
     },
     "Kernel SVM (linear)": {
-        "C": 0.8000000000000003,
+        "C": 0.3,
         "class_weight": "balanced",
         "kernel": "linear",
         "normalize": true,
         "threshold": 0.8
     },
     "Kernel SVM (poly)": {
-        "C": 0.9000000000000001,
-        "class_weight": null,
+        "C": 0.3,
+        "class_weight": "balanced",
         "degree": 2,
         "kernel": "poly",
-        "normalize": true,
+        "normalize": false,
         "threshold": 0.8
     },
     "Kernel SVM (rbf)": {
         "C": 0.3,
-        "class_weight": null,
+        "class_weight": "balanced",
         "kernel": "rbf",
-        "normalize": true,
+        "normalize": false,
         "threshold": 0.8
     },
     "Kernel SVM (sigmoid)": {
-        "C": 0.9000000000000001,
-        "class_weight": null,
+        "C": 0.3,
+        "class_weight": "balanced",
         "kernel": "sigmoid",
         "normalize": true,
         "threshold": 0.8
