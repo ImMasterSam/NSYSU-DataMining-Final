@@ -8,6 +8,7 @@ from tqdm import tqdm
 from args import *
 from Classifiers.classifier import Classifier
 from Clusters.KMeans import KMeansCluster
+from Clusters.DBScan import DBScanCluster
 
 from tools.Hyperparameter import hyperparameter_tuning
 from tools.DataHandler import data_preprocessB
@@ -103,9 +104,13 @@ def testB_main():
         # 資料預處理
         x_train_preprocessed, y_train_preprocessed, x_test_preprocessed = data_preprocessB(
             x_train, y_train, x_test, constant_threshold = constant_threshold, resampling=resampling, feature_selection=selection_k)
+        
         for model_name in models:
+
             classifier_accs = []
             kmeans_accs = []
+            dbscan_accs = []
+
             for _ in range(repeat_times):
                 # ===== Classification =====
                 model: Classifier = model_options[model_name]
@@ -121,12 +126,22 @@ def testB_main():
                     if acc > best_score:
                         best_k = k
                         best_score = acc
+
+                # DBScan 分群
+                DBScan = DBScanCluster(eps=3, min_samples=2)
+                acc = DBScan.score(x_test_preprocessed, y_classified, y_train_preprocessed, y_test, output = False)
+                # print(f"{model_name} -> DBScan Score: {acc * 100:.2f} %\n")
+
                 # 新增分數
                 classifier_accs.append(report['accuracy'])
                 kmeans_accs.append(best_score)
+                dbscan_accs.append(acc)
+
             # 計算平均分數
             classifier_acc = np.mean(classifier_accs)
             kmeans_acc = np.mean(kmeans_accs)
+            dbscan_acc = np.mean(dbscan_accs)
+
             # 儲存結果到 DataFrame
             result_df.loc[len(result_df)] = {
                 'Classification': model_name,
@@ -137,6 +152,17 @@ def testB_main():
                 'resampling': resampling,
                 'feature_selection_k': selection_k
             }
+
+            result_df.loc[len(result_df)] = {
+                'Classification': model_name,
+                'Clustering': 'DBScan',
+                'Classifier_Accuracy': classifier_acc,
+                'Clustering_Accuracy': dbscan_acc,
+                'constant_threshold': constant_threshold,
+                'resampling': resampling,
+                'feature_selection_k': selection_k
+            }
+
     # 儲存結果到 CSV 檔案
     result_df.to_csv('testB_results.csv', index=False)
 
