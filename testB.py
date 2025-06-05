@@ -133,6 +133,7 @@ def testB_main():
                 'Clustering': 'KMeans',
                 'Classifier_Accuracy': classifier_acc,
                 'Clustering_Accuracy': kmeans_acc,
+                'constant_threshold': constant_threshold,
                 'resampling': resampling,
                 'feature_selection_k': selection_k
             }
