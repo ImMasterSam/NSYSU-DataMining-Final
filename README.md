@@ -133,11 +133,7 @@ $ python testA.py
 $ python testB.py
 ```
 
-## 組員與連結
-
-### Streamlit 連結
-Not yet : )   
-可能沒有了 : (
+## 組員
 
 ### 組員:
 - __B123040049劉育希__
